@@ -108,6 +108,8 @@ class Games(commands.Cog):
         else:
             name = "Leisure Kunai"
             emoji = config.emojis["leisure"]
+            
+        collection.update_one({"_id": ctx.user.id}, {"$inc": {currency: -bet}})
         deck = copy.deepcopy(config.deck)
         shuffle(deck)
         dealer_hand = []
@@ -156,9 +158,9 @@ class Games(commands.Cog):
             em = self.client.create_embed(f"Blackjack", f"You won the game!", config.embed_color,
                                           ctx.user.name, ctx.user.avatar.url)
             if config.calculate_hand_value(player_hand) == 21:
-                modifier = 1.5
+                modifier = 2
             else:
-                modifier = 1
+                modifier = 1.5
             em.add_field(name=f"Winning:", value=f"{bet * modifier} {emoji}", inline=True)
             em.add_field(name="New Balance:", value=f"{user_doc[currency] + bet * modifier} {emoji}", inline=True)
             em = end_add_hand_fields(em)
