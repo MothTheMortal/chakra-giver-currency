@@ -1,4 +1,6 @@
 import asyncio
+import copy
+
 import discord
 from discord.ext import commands
 import config
@@ -106,8 +108,7 @@ class Games(commands.Cog):
         else:
             name = "Leisure Kunai"
             emoji = config.emojis["leisure"]
-
-        deck = config.deck
+        deck = copy.deepcopy(config.deck)
         shuffle(deck)
         dealer_hand = []
         player_hand = []
