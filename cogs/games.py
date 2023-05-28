@@ -108,7 +108,7 @@ class Games(commands.Cog):
         else:
             name = "Leisure Kunai"
             emoji = config.emojis["leisure"]
-            
+
         collection.update_one({"_id": ctx.user.id}, {"$inc": {currency: -bet}})
         deck = copy.deepcopy(config.deck)
         shuffle(deck)
@@ -161,11 +161,11 @@ class Games(commands.Cog):
                 modifier = 2
             else:
                 modifier = 1.5
-            em.add_field(name=f"Winning:", value=f"{bet * modifier} {emoji}", inline=True)
-            em.add_field(name="New Balance:", value=f"{user_doc[currency] + bet * modifier} {emoji}", inline=True)
+            em.add_field(name=f"Winning:", value=f"{int(bet * modifier)} {emoji}", inline=True)
+            em.add_field(name="New Balance:", value=f"{user_doc[currency] + int(bet * modifier)} {emoji}", inline=True)
             em = end_add_hand_fields(em)
             em.set_footer(text="You won!")
-            collection.update_one({"_id": ctx.user.id}, {"$inc": {currency: bet * modifier}})
+            collection.update_one({"_id": ctx.user.id}, {"$inc": {currency: int(bet * modifier)}})
             await ctx.edit_original_response(view=None)
 
             return await ctx.edit_original_response(embed=em)
