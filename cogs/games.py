@@ -111,11 +111,11 @@ class Games(commands.Cog):
         shuffle(deck)
         dealer_hand = []
         player_hand = []
-        print("DECK BEFORE RUN", deck)
+        print("DECK BEFORE RUN", len(deck))
         for i in range(2):
             dealer_hand.append(deck.pop(0))
             player_hand.append(deck.pop(0))
-        print("DECK AFTER RUN", deck)
+        print("DECK AFTER RUN", len(deck))
         em = self.client.create_embed(f"Blackjack", f"You bet {bet} {emoji}", config.embed_color,
                                       ctx.user.name, ctx.user.avatar.url)
 
@@ -304,7 +304,7 @@ class Games(commands.Cog):
 
             em.set_footer(text=f"Your Turn")
             await ctx.edit_original_response(embed=em)
-            print("DECK after 1st loop", deck)
+            print("DECK after 1st loop", len(deck))
 
     @app_commands.command(name="guessthenumber", description="Guess The Number Game")
     @app_commands.describe(bet="How much you want to bet (Minimum 200).",
