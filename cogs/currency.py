@@ -514,7 +514,7 @@ class Currency(commands.Cog):
                 return await shop_message.delete(delay=10)
 
 
-    @app_commands.command(name="claim", description="Claim 100-300 shurikens every day and 500-1000 every 7 days.")
+    @app_commands.command(name="claim", description=f"Claim {config.shurikenDaily[0]}-{config.shurikenDaily[1]} shurikens every day and {config.shurikenWeekly[0]}-{config.shurikenWeekly[1]} every 7 days.")
     async def claim(self, ctx: discord.Interaction):
         msg = await self.verifyUser(ctx)
         if msg is None:
@@ -561,11 +561,11 @@ class Currency(commands.Cog):
             else:
                 collection.update_one({"_id": 1}, {"$push": {"daily_claims": ctx.user.id}})
 
-            shurikens = randint(100, 300)
+            shurikens = randint(config.shurikenDaily[0], config.shurikenDaily[1])
             exp = randint(config.expGain[0], config.expGain[1])
             userID = ctx.user.id
             collection = self.client.get_database_collection("users")
-            kunai = shurikens * 50
+            kunai = shurikens * config.kunaiMultiplier
             collection.update_one({"_id": userID}, {"$inc": {"shuriken": shurikens}})
             collection.update_one({"_id": userID}, {"$inc": {"experience": exp}})
             collection.update_one({"_id": userID}, {"$inc": {"leisure": kunai}})
@@ -594,9 +594,9 @@ class Currency(commands.Cog):
             else:
                 collection.update_one({"_id": 1}, {"$push": {"daily_claims": ctx.user.id}})
 
-            shurikens = randint(500, 1000)
+            shurikens = randint(config.shurikenWeekly[0], config.shurikenWeekly[1])
             exp = randint(config.expGain[0], config.expGain[1]) * 5
-            kunai = shurikens * 50
+            kunai = shurikens * kunaiMultiplier
             userID = ctx.user.id
             collection = self.client.get_database_collection("users")
             collection.update_one({"_id": userID}, {"$inc": {"shuriken": shurikens}})

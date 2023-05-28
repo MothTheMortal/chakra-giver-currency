@@ -12,6 +12,7 @@ import time
 import datetime
 from random import choice
 
+
 class Cog_Manager(commands.Cog):
     def __init__(self, client):
         self.client = client
@@ -35,6 +36,194 @@ class Cog_Manager(commands.Cog):
     #
     #
     #     await ctx.response.send_message("test")
+
+    @app_commands.command(name="help",
+                          description="Shows information on available functionalities and how to use them.")
+    @app_commands.choices(
+        question=[
+            app_commands.Choice(name="What is the Chakra Giver Bot?", value=1),
+            app_commands.Choice(name="What are Shurikens?", value=2),
+            app_commands.Choice(name="What are Leisure Kunais?", value=3),
+            app_commands.Choice(name="What does /claim do?", value=4),
+            app_commands.Choice(name="What does /milestone do?", value=5),
+            app_commands.Choice(name="What does /jackpot do?", value=6),
+            app_commands.Choice(name="What does /guessthenumber do?", value=7),
+            app_commands.Choice(name="What does /coinflip do?", value=8),
+            app_commands.Choice(name="What does /blackjack do?", value=9),
+            app_commands.Choice(name="What does /shop do?", value=10),
+            app_commands.Choice(name="What is the use of Jōnin Role?", value=11),
+            app_commands.Choice(name="What is the use of Chōnin Role?", value=12)
+
+        ]
+    )
+    async def help(self, ctx: discord.Interaction, question: app_commands.Choice[int]):
+        choice = question.value
+        if choice == 1:
+            desc = "```The Chakra Giver Bot is a naruto-themed gaming bot designed to allows users to grind and earn Shurikens or Leisure Kunais whilst gaining EXP within the Crib.```\n```It offers the ability for users to play games to increase their wealth and buy real rewards within the shop.```"
+
+            embed = self.client.create_embed(title=question.name, description=desc, color=config.embed_color)
+            embed.add_field(name="Owned By:", value="```Vynx#1112```", inline=True)
+            embed.add_field(name="Created By:", value="```MothTheMortal#0737```", inline=True)
+
+        elif choice == 2:
+            desc = "```Shurikens are the major form of currency in the Chakra Giver bot that is used to purchase rewards in the shop.```"
+
+            embed = self.client.create_embed(title=question.name, description=desc, color=config.embed_color)
+            embed.add_field(name="How to obtain Shurikens?", value="", inline=False)
+            embed.add_field(name="By claiming them every day.", value="```/claim```", inline=True)
+            embed.add_field(name="By playing gambling games.", value="```/guessthenumber\n/coinflip\n/blackjack```",
+                            inline=True)
+
+        elif choice == 3:
+            desc = "```Leisure Kunais are the minor form of currency in the Chakra Giver bot that mainly have no real value, but can be used to grind EXP and try out the games.```"
+
+            embed = self.client.create_embed(title=question.name, description=desc, color=config.embed_color)
+            embed.add_field(name="How to obtain Leisure Kunais?", value="", inline=False)
+            embed.add_field(name="By claiming them every day:", value="```/claim```", inline=True)
+            embed.add_field(name="By playing games:", value="```/guessthenumber\n/coinflip\n/blackjack```",
+                            inline=True)
+        elif choice == 4:
+
+            desc = "```'/claim' is the main source of gaining Shurikens, Leisure Kunais and EXP.```"
+
+            embed = self.client.create_embed(title=question.name, description=desc, color=config.embed_color)
+            embed.add_field(name="Rules:", value="", inline=False)
+            embed.add_field(name="- It can be used once per day.", value="", inline=False)
+            embed.add_field(name="- It resets everyday at UTC 00:00.", value="", inline=False)
+            embed.add_field(name="- It cycles between Day 1 to Day 7.", value="", inline=False)
+            embed.add_field(name="- Claims on Day 1-6 are referred to as Daily Claim.", value="", inline=False)
+            embed.add_field(name="- Claims on Day 7 are referred to as Weekly Claim.", value="", inline=False)
+            embed.add_field(
+                name=f"- You can gain {config.shurikenDaily[0]}-{config.shurikenDaily[1]} shurikens Randomly on Day 1-6.",
+                value="", inline=False)
+            embed.add_field(
+                name=f"- You can gain {config.shurikenWeekly[0]}-{config.shurikenWeekly[1]} shurikens Randomly on Day 7.",
+                value="", inline=False)
+            embed.add_field(name=f"- You will gain {config.kunaiMultiplier}x the shurikens you get as Leisure Kunai.",
+                            value="", inline=False)
+            embed.add_field(name=f"- You can gain {config.expGain[0]}-{config.expGain[1]} EXP Randomly on Day 1-6.",
+                            value="", inline=False)
+            embed.add_field(
+                name=f"- You can gain {config.expGain[0] * 5}-{config.expGain[1] * 5} EXP Randomly on Day 7.", value="",
+                inline=False)
+            embed.add_field(name=f"- Only the first {config.daily_cap} users can claim on Day 1-6.", value="",
+                            inline=False)
+            embed.add_field(name=f"- Only the first {config.weekly_cap} users can claim on Day 7.", value="",
+                            inline=False)
+            embed.add_field(
+                name=f"- Users with the Chōnin role can bypass the claim limit (Their claims still count toward the claim counter).",
+                value="", inline=False)
+
+        elif choice == 5:
+            desc = "```'/milestone' allows you to claim rewards after reaching certain level milestones.```"
+
+            embed = self.client.create_embed(title=question.name, description=desc, color=config.embed_color)
+            embed.add_field(name="Milestones:", value="", inline=False)
+            for key, val in config.milestone_rewards.items():
+                embed.add_field(name=f"Level {key}: {val}", value="", inline=False)
+        elif choice == 6:
+            desc = "```'/jackpot' allows you to view or increase the current jackpot.```"
+
+            embed = self.client.create_embed(title=question.name, description=desc, color=config.embed_color)
+            embed.add_field(name="Rules:", value="", inline=False)
+            embed.add_field(name="- Every shuriken added to the jackpot will be increased by 1.5x.", value="",
+                            inline=False)
+            embed.add_field(name="- The jackpot starts on Day 1 and picks a Lucky Winner on Day 7.", value="",
+                            inline=False)
+        elif choice == 7:
+            desc = "```'/guessthenumber' allows you to play Guess the Number game to increase your bet by 2x.```"
+
+            embed = self.client.create_embed(title=question.name, description=desc, color=config.embed_color)
+            embed.add_field(name="Rules:", value="", inline=False)
+            embed.add_field(name="- User has to guess a random number between 1-25 inclusive.", value="", inline=False)
+            embed.add_field(name="- User must bet at least 200 of either currencies to play the game.", value="",
+                            inline=False)
+            embed.add_field(name="- User is given 3 total chances to guess.", value="", inline=False)
+            embed.add_field(name="- After every wrong guess, a hint is provided in the form of 'Higher' or 'Lower'.",
+                            value="", inline=False)
+            embed.add_field(name="- If User wins the game, they will win 2x the bet.", value="", inline=False)
+            embed.add_field(
+                name="- If an invalid response is given on the first guess, the game will end, and the bet will be returned. However, if an invalid response is given after the first try, the game will end but the bet will be taken.",
+                value="", inline=False)
+
+        elif choice == 8:
+            desc = "```'/coinflip' allows you to play coinflip to increase your bet by 1.25x.```"
+
+            embed = self.client.create_embed(title=question.name, description=desc, color=config.embed_color)
+            embed.add_field(name="Rules:", value="", inline=False)
+            embed.add_field(name="- User has to guess either 'Head' or 'Tail'.", value="", inline=False)
+            embed.add_field(name="- User must bet at least 200 of either currencies to play the game.", value="",
+                            inline=False)
+            embed.add_field(name="- User is given only one chance to guess.", value="", inline=False)
+            embed.add_field(name="- If user wins the game, they will gain 1.25x the bet.", value="", inline=False)
+            embed.add_field(name="- If an invalid response is given, the game will end, and the bet will be returned.",
+                            value="", inline=False)
+
+        elif choice == 9:
+            desc = "```'/blackjack' allows you to play blackjack to increase your bet by either 1.5x or 2x.```"
+            embed = self.client.create_embed(title=question.name, description=desc, color=config.embed_color)
+            embed.add_field(name="Rules:", value="", inline=False)
+            embed.add_field(name="- User must bet at least 100 of either currencies to play the game.", value="",
+                            inline=False)
+            embed.add_field(
+                name="- When the game starts, User is given 2 cards, and the dealer is given 2 card as well, but only one of his card is displayed.",
+                value="", inline=False)
+            embed.add_field(
+                name="- In blackjack, 'Hit' means to pick another card, and 'Stand' means to compare the hand value and decide the winner.",
+                value="", inline=False)
+            embed.add_field(name="- If you pick 'Hit', the dealer also has the choice to 'Hit' or continue.", value="",
+                            inline=False)
+            embed.add_field(name="- The goal of the game is to reach hand value of 21.", value="", inline=False)
+            embed.add_field(
+                name="- If the User or the dealer get 21, they win instantly. If both of them get 21, It's a tie.",
+                value="", inline=False)
+            embed.add_field(
+                name="- If the User or the dealer gets above 21, they lose instantly. If both get above 21, It's a tie.",
+                value="", inline=False)
+            embed.add_field(
+                name="- If both the User and the Dealer get below 21, then the one with higher hand value wins.",
+                value="", inline=False)
+            embed.add_field(
+                name="- All numbered cards have the value of their number. Example - 4 of Diamonds -> Value = 4",
+                value="", inline=False)
+            embed.add_field(name="- Jacks, Queen and King have the value of 10.", value="", inline=False)
+            embed.add_field(
+                name="- If 10 + Your total hand value without the ace is below or equals to 21, then the ace has the value of 10. Otherwise, it has a value of 1",
+                value="", inline=False)
+            embed.add_field(name="- If you win by getting hand value of 21, you win 2x your bet.", value="",
+                            inline=False)
+            embed.add_field(name="- If you win by getting higher hand value than the dealer, you win 1.5x your bet.",
+                            value="", inline=False)
+            embed.add_field(name="- If you tie with the dealer, your bet is returned.", value="", inline=False)
+        elif choice == 10:
+            desc = "```'/shop' allows you to purchase various items and roles at the cost of shurikens.```"
+            embed = self.client.create_embed(title=question.name, description=desc, color=config.embed_color)
+            embed.add_field(name="Rules:", value="", inline=False)
+            embed.add_field(name="- An item can be purchased by reacting to the 'Star' emoji in the middle.", value="",
+                            inline=False)
+            embed.add_field(name="- Each item in the shop can be purchased a maximum of 5 times.", value="",
+                            inline=False)
+            embed.add_field(name="- After 5 purchases, the item will be locked and unable to be purchased.", value="",
+                            inline=False)
+            embed.add_field(name="- The purchase limit for items is reset every month.", value="", inline=False)
+
+
+
+        elif choice == 11:
+            desc = "```'Jōnin role' gives you access to a separate Giveaway channel.```"
+            embed = self.client.create_embed(title=question.name, description=desc, color=config.embed_color)
+            embed.add_field(name="How to obtain it?:", value="", inline=False)
+            embed.add_field(name="- Buy it in Shop.", value="", inline=False)
+            embed.add_field(name="- Claim it as a milestone.", value="", inline=False)
+        elif choice == 12:
+            desc = "```'Chōnin role' allows you to bypass the claim limit for /claim (The claim still counts towards the counter).```"
+            embed = self.client.create_embed(title=question.name, description=desc, color=config.embed_color)
+            embed.add_field(name="How to obtain it?:", value="", inline=False)
+            embed.add_field(name="- Buy it in Shop.", value="", inline=False)
+            embed.add_field(name="- Claim it as a milestone.", value="", inline=False)
+
+        await ctx.response.send_message(embed=embed)
+
 
 
     @commands.Cog.listener()

@@ -89,6 +89,7 @@ circledNumbers = {
     46: "\u32BB", 47: "\u32BC", 48: "\u32BD", 49: "\u32BE", 50: "\u32BF"
 }
 
+
 expRequired = {
     "1": 50,
     "2": 55,
@@ -164,6 +165,9 @@ milestone_type = {
     40: "shuriken",
     50: "shuriken"
 }
+shurikenDaily = [100, 300]
+shurikenWeekly = [500, 1000]
+kunaiMultiplier = 10
 gtn_tries = 3
 daily_cap = 50
 weekly_cap = 25

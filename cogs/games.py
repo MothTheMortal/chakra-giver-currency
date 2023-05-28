@@ -151,6 +151,7 @@ class Games(commands.Cog):
                                           ctx.user.name, ctx.user.avatar.url)
             em = end_add_hand_fields(em)
             em.set_footer(text="It's a tie!")
+            collection.update_one({"_id": ctx.user.id}, {"$inc": {currency: bet}})
             await ctx.edit_original_response(view=None)
             return await ctx.edit_original_response(embed=em)
 
