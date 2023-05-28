@@ -18,58 +18,58 @@ class Miscellaneous(commands.Cog):
     def __init__(self, client):
         self.client = client
 
-    @app_commands.command(name="milestone_rewards", description="Shows all milestone rewards")
-    async def milestoneRewards(self, ctx: discord.Interaction):
-        rewards: dict = config.milestone_rewards
-        em: discord.Embed = self.client.create_embed("Milestone Rewards", "Loading Rewards...", config.embed_color)
-        await ctx.response.send_message(embed=em)
-
-        msg = await ctx.original_response()
-        await msg.add_reaction("⬅")
-        await msg.add_reaction("➡")
-        keys = list(rewards.keys())
-        item_index = 0
-        index_bounds = (0, len(keys) - 1)
-        while True:
-            level = keys[item_index]
-            reward = rewards[keys[item_index]]
-
-            item_embed: discord.Embed = self.client.create_embed(f"Level {level} Milestone", "",
-                                                                 config.embed_color)
-            item_embed.add_field(name="Reward:", value=f"{reward}")
-            item_embed.set_footer(text=f"Page {item_index + 1}/{index_bounds[1] + 1}")
-            await msg.edit(embed=item_embed)
-            reply = await self.client.message_reaction(msg, ctx.user, 30)
-
-            if reply is None:
-                return await msg.delete(delay=10)
-
-            async def invalid_response():
-                invalid_response_embed = self.client.create_embed(
-                    "Invalid Response",
-                    "The response that you provided to the question was not acceptable.",
-                    config.embed_color
-                )
-
-                await msg.edit(embed=invalid_response_embed)
-
-            if reply not in ["⬅", "➡"]:
-                await invalid_response()
-                return await shop_message.delete(delay=10)
-
-            await msg.remove_reaction(reply, ctx.user)
-
-            if reply == "⬅":
-                item_index -= 1
-
-                if item_index < index_bounds[0]:
-                    item_index = index_bounds[1]
-
-            elif reply == "➡":
-                item_index += 1
-
-                if item_index > index_bounds[1]:
-                    item_index = index_bounds[0]
+    # @app_commands.command(name="milestone_rewards", description="Shows all milestone rewards")
+    # async def milestoneRewards(self, ctx: discord.Interaction):
+    #     rewards: dict = config.milestone_rewards
+    #     em: discord.Embed = self.client.create_embed("Milestone Rewards", "Loading Rewards...", config.embed_color)
+    #     await ctx.response.send_message(embed=em)
+    #
+    #     msg = await ctx.original_response()
+    #     await msg.add_reaction("⬅")
+    #     await msg.add_reaction("➡")
+    #     keys = list(rewards.keys())
+    #     item_index = 0
+    #     index_bounds = (0, len(keys) - 1)
+    #     while True:
+    #         level = keys[item_index]
+    #         reward = rewards[keys[item_index]]
+    #
+    #         item_embed: discord.Embed = self.client.create_embed(f"Level {level} Milestone", "",
+    #                                                              config.embed_color)
+    #         item_embed.add_field(name="Reward:", value=f"{reward}")
+    #         item_embed.set_footer(text=f"Page {item_index + 1}/{index_bounds[1] + 1}")
+    #         await msg.edit(embed=item_embed)
+    #         reply = await self.client.message_reaction(msg, ctx.user, 30)
+    #
+    #         if reply is None:
+    #             return await msg.delete(delay=10)
+    #
+    #         async def invalid_response():
+    #             invalid_response_embed = self.client.create_embed(
+    #                 "Invalid Response",
+    #                 "The response that you provided to the question was not acceptable.",
+    #                 config.embed_color
+    #             )
+    #
+    #             await msg.edit(embed=invalid_response_embed)
+    #
+    #         if reply not in ["⬅", "➡"]:
+    #             await invalid_response()
+    #             return await shop_message.delete(delay=10)
+    #
+    #         await msg.remove_reaction(reply, ctx.user)
+    #
+    #         if reply == "⬅":
+    #             item_index -= 1
+    #
+    #             if item_index < index_bounds[0]:
+    #                 item_index = index_bounds[1]
+    #
+    #         elif reply == "➡":
+    #             item_index += 1
+    #
+    #             if item_index > index_bounds[1]:
+    #                 item_index = index_bounds[0]
 
     @app_commands.command(name="resetmilestone", description="Reset's a user's claimable milestone.")
     @app_commands.default_permissions(administrator=True)
