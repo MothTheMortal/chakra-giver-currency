@@ -216,13 +216,13 @@ def format_hand(hand):
             suit = "<:spades:1111110989673406555>"
 
         if rank == 'A':
-            formatted_hand.append("Ace " + suit)
+            formatted_hand.append("A " + suit)
         elif rank == 'K':
-            formatted_hand.append("King " + suit)
+            formatted_hand.append("K " + suit)
         elif rank == 'Q':
-            formatted_hand.append("Queen " + suit)
+            formatted_hand.append("Q " + suit)
         elif rank == 'J':
-            formatted_hand.append("Jack" + suit)
+            formatted_hand.append("J " + suit)
         else:
             formatted_hand.append(f"{rank} {suit}")
     return formatted_hand
