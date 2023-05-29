@@ -122,7 +122,7 @@ class Games(commands.Cog):
 
         def add_hand_fields(em):
             val = config.format_hand(player_hand)
-            val = " - ".join(val)
+            val = " | ".join(val)
             em.add_field(name=f"Your Hand:", value=val, inline=False)
             em.add_field(name="", value=f"**Your Hand Value:** {config.calculate_hand_value(player_hand)}", inline=False)
             em.add_field(name="------------------", value="")
@@ -132,9 +132,9 @@ class Games(commands.Cog):
 
         def end_add_hand_fields(em):
             val = config.format_hand(player_hand)
-            val = " AND ".join(val)
+            val = " | ".join(val)
             val2 = config.format_hand(dealer_hand)
-            val2 = " AND ".join(val2)
+            val2 = " | ".join(val2)
             em.add_field(name="------------------", value="", inline=False)
             em.add_field(name="Your Hand:", value=val, inline=False)
             em.add_field(name="", value=f"**Your Hand Value:** {config.calculate_hand_value(player_hand)}", inline=False)
