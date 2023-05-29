@@ -170,7 +170,6 @@ class Games(commands.Cog):
 
             return await ctx.edit_original_response(embed=em)
 
-
         async def loss():
             em = self.client.create_embed(f"Blackjack", f"You lost the game!", config.embed_color,
                                           ctx.user.name, ctx.user.avatar.url)
@@ -179,7 +178,6 @@ class Games(commands.Cog):
             em = end_add_hand_fields(em)
             em.set_footer(text="You lost!")
             await ctx.edit_original_response(view=None)
-            collection.update_one({"_id": ctx.user.id}, {"$inc": {currency: -bet}})
             return await ctx.edit_original_response(embed=em)
 
         async def hit(ctx: discord.Interaction):
