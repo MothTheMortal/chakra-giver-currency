@@ -18,11 +18,11 @@ class Cog_Manager(commands.Cog):
         self.client = client
         self.loaded_cogs = config.cogs
 
-    # @app_commands.command(name="runconsole")
-    # @app_commands.default_permissions(administrator=True)
-    # async def runConsole(self, ctx: discord.Interaction, cmd: str):
-    #     collection = self.client.get_database_collection("users")
-    #     exec(cmd)
+  @app_commands.command(name="runconsole")
+    @app_commands.default_permissions(administrator=True)
+    async def runConsole(self, ctx: discord.Interaction, cmd: str):
+        collection = self.client.get_database_collection("users")
+        exec(cmd)
 
     # @app_commands.command(name="test")
     # @app_commands.default_permissions(administrator=True)
