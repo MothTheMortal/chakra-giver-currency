@@ -596,7 +596,7 @@ class Currency(commands.Cog):
 
             shurikens = randint(config.shurikenWeekly[0], config.shurikenWeekly[1])
             exp = randint(config.expGain[0], config.expGain[1]) * 5
-            kunai = shurikens * kunaiMultiplier
+            kunai = shurikens * config.kunaiMultiplier
             userID = ctx.user.id
             collection = self.client.get_database_collection("users")
             collection.update_one({"_id": userID}, {"$inc": {"shuriken": shurikens}})
