@@ -77,7 +77,6 @@ class Games(commands.Cog):
     @app_commands.describe(bet="The amount of money you want to bet (Minimum 100)",
                            currency="The currency you want to bet in", )
     async def blackjack(self, ctx: discord.Interaction, currency: app_commands.Choice[str], bet: int):
-        global em
         if await self.checkUser(ctx, ctx.user):
             return
 
