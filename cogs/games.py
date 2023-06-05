@@ -166,7 +166,7 @@ class Games(commands.Cog):
             em.add_field(name="New Balance:", value=f"{user_doc[currency] + new} {emoji}", inline=True)
             em = end_add_hand_fields(em)
             em.set_footer(text="You won!")
-            collection.update_one({"_id": ctx.user.id}, {"$inc": {currency: new}})
+            collection.update_one({"_id": ctx.user.id}, {"$inc": {currency: new + bet}})
             await ctx.edit_original_response(view=None)
 
             return await ctx.edit_original_response(embed=em)
