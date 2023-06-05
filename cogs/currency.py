@@ -131,15 +131,15 @@ class Currency(commands.Cog):
             await msg.delete(delay=10)
             return None
 
-
     @app_commands.command(name="addtorole", description="Adds a currency to all users with the role.")
     @app_commands.default_permissions(administrator=True)
     @app_commands.choices(currency=[
-            app_commands.Choice(name="Shurikens", value="shuriken"),
-            app_commands.Choice(name="Leisure Kunai", value="leisure"),
-            app_commands.Choice(name="Both", value="both")
-        ])
-    async def addtorole(self, ctx: discord.Interaction, currency: app_commands.Choice[str], role: discord.Role, value: int):
+        app_commands.Choice(name="Shurikens", value="shuriken"),
+        app_commands.Choice(name="Leisure Kunai", value="leisure"),
+        app_commands.Choice(name="Both", value="both")
+    ])
+    async def addtorole(self, ctx: discord.Interaction, currency: app_commands.Choice[str], role: discord.Role,
+                        value: int):
         if ctx.user.id not in config.gods:
             return
         collection = self.client.get_database_collection("users")
@@ -162,10 +162,10 @@ class Currency(commands.Cog):
     @app_commands.command(name="addall", description="Adds both currencies to all users who have Genin.")
     @app_commands.default_permissions(administrator=True)
     @app_commands.choices(currency=[
-            app_commands.Choice(name="Shurikens", value="shuriken"),
-            app_commands.Choice(name="Leisure Kunai", value="leisure"),
-            app_commands.Choice(name="Both", value="both")
-        ])
+        app_commands.Choice(name="Shurikens", value="shuriken"),
+        app_commands.Choice(name="Leisure Kunai", value="leisure"),
+        app_commands.Choice(name="Both", value="both")
+    ])
     async def add(self, ctx: discord.Interaction, currency: app_commands.Choice[str], value: int):
         if ctx.user.id not in config.gods:
             return
@@ -178,11 +178,11 @@ class Currency(commands.Cog):
             collection.update_many({}, {"$inc": {"shuriken": value}})
             collection.update_many({}, {"$inc": {"leisure": value}})
 
-    @app_commands.command(name="leaderboard",description="Shows the leaderboard for a currency.")
+    @app_commands.command(name="leaderboard", description="Shows the leaderboard for a currency.")
     @app_commands.choices(currency=[
-            app_commands.Choice(name="Shurikens", value="shuriken"),
-            app_commands.Choice(name="Leisure Kunai", value="leisure")
-        ])
+        app_commands.Choice(name="Shurikens", value="shuriken"),
+        app_commands.Choice(name="Leisure Kunai", value="leisure")
+    ])
     async def lb(self, ctx: discord.Interaction, currency: app_commands.Choice[str], places: int = 10):
         currency = currency.value
         emoji = config.emojis[currency]
@@ -193,13 +193,12 @@ class Currency(commands.Cog):
                 self.id = id
                 self.coins = coins
                 self.name = name
-        leaderboard = []
 
+        leaderboard = []
 
         for user in user_collection.find():
             if not user["_id"] in config.gods:
                 leaderboard.append(LeaderBoardPosition(user["_id"], int(user[currency]), user["name"]))
-
 
         top = sorted(leaderboard, key=lambda x: x.coins, reverse=True)
 
@@ -224,13 +223,12 @@ class Currency(commands.Cog):
 
         return await ctx.response.send_message(embed=leaderboard_embed)
 
-
     @app_commands.command(name="jackpot", description="Jackpot command.")
     @app_commands.choices(action=[
-            app_commands.Choice(name="View Jackpot", value="view"),
-            app_commands.Choice(name="Add to Jackpot", value="add"),
-        ])
-    @app_commands.describe(action="The action to execute.",value="The amount of money to add to the jackpot.")
+        app_commands.Choice(name="View Jackpot", value="view"),
+        app_commands.Choice(name="Add to Jackpot", value="add"),
+    ])
+    @app_commands.describe(action="The action to execute.", value="The amount of money to add to the jackpot.")
     async def jackpot(self, ctx: discord.Interaction, action: app_commands.Choice[str], value: int = None):
 
         if await self.checkUser(ctx, ctx.user):
@@ -249,9 +247,9 @@ class Currency(commands.Cog):
                                           config.embed_color)
             return await ctx.response.send_message(embed=em)
 
-
         if action.value == "add" and value is None:
-            em = self.client.create_embed("No value provided!", "Please provide a value to add to the jackpot.", config.embed_color)
+            em = self.client.create_embed("No value provided!", "Please provide a value to add to the jackpot.",
+                                          config.embed_color)
             return await ctx.response.send_message(embed=em)
 
         elif action.value == "add" and value is not None:
@@ -259,14 +257,18 @@ class Currency(commands.Cog):
             user_doc = collection.find_one({"_id": ctx.user.id})
 
             if user_doc["shuriken"] < value:
-                em = self.client.create_embed("Not enough shurikens!", "You do not have enough shurikens to add to the jackpot.", config.embed_color)
+                em = self.client.create_embed("Not enough shurikens!",
+                                              "You do not have enough shurikens to add to the jackpot.",
+                                              config.embed_color)
                 return await ctx.response.send_message(embed=em)
 
             collection.update_one({"_id": ctx.user.id}, {"$inc": {"shuriken": -value}})
 
             data_collection.update_one({"_id": 1}, {"$inc": {"jackpot": int(value * 1.5)}})
             data_collection.update_one({"_id": 1}, {"$push": {"jackpot_users": ctx.user.id}})
-            em = self.client.create_embed(f":moneybag: Jackpot Increased :moneybag: ", f"You added {value} {emoji} to the jackpot. All shurikens added to the jackpot will be x1.5", config.embed_color)
+            em = self.client.create_embed(f":moneybag: Jackpot Increased :moneybag: ",
+                                          f"You added {value} {emoji} to the jackpot. All shurikens added to the jackpot will be x1.5",
+                                          config.embed_color)
             value = int(value * 1.5)
             em.add_field(name="Previous Jackpot:", value=f"{jackpot} {emoji}")
             em.add_field(name="New Jackpot:", value=f"{jackpot + value} {emoji}")
@@ -277,12 +279,12 @@ class Currency(commands.Cog):
             with open("data/current_day.json", "r") as f:
                 current_day = json.load(f)["dotw"]
 
-            em = self.client.create_embed(":moneybag: Jackpot :moneybag:", "The Jackpot will end on **Day 7 **", config.embed_color)
+            em = self.client.create_embed(":moneybag: Jackpot :moneybag:", "The Jackpot will end on **Day 7 **",
+                                          config.embed_color)
             em.add_field(name="Jackpot:", value=f"{jackpot} {emoji}", inline=True)
             em.add_field(name="Current Day:", value=f"Day {current_day}", inline=True)
             em.add_field(name="Total Participants:", value=len(set(data_doc["jackpot_users"])), inline=True)
             return await ctx.response.send_message(embed=em)
-
 
     @app_commands.command(name="resetshoplock", description="Resets locks on all shop items.")
     @app_commands.default_permissions(administrator=True)
@@ -291,7 +293,6 @@ class Currency(commands.Cog):
             return
         await self.resetShop()
         await ctx.response.send_message("All shops have been unlocked and set to 0 purchases", ephemeral=True)
-
 
     @app_commands.command(name="balance", description="Shows your balance.")
     async def balance(self, ctx: discord.Interaction, user: discord.Member = None):
@@ -303,22 +304,22 @@ class Currency(commands.Cog):
         if await self.checkUser(ctx, user):
             return
 
-
-        bal_embed: discord.Embed = self.client.create_embed(f"{user.name}'s Belt", "", config.embed_color, user.name, user.avatar.url)
+        bal_embed: discord.Embed = self.client.create_embed(f"{user.name}'s Belt", "", config.embed_color, user.name,
+                                                            user.avatar.url)
         bal_embed.add_field(name="Shurikens:", value=f"{int(user_profile['shuriken'])} {config.emojis['shuriken']}",
                             inline=True)
         bal_embed.add_field(name="Leisure Kunai:", value=f"{int(user_profile['leisure'])} {config.emojis['leisure']}",
                             inline=True)
         await ctx.response.send_message(embed=bal_embed)
 
-
     @app_commands.command(name="addcurrency", description="Adds shurikens to a user.")
     @app_commands.default_permissions(administrator=True)
     @app_commands.choices(currency=[
-            app_commands.Choice(name="Shurikens", value="shuriken"),
-            app_commands.Choice(name="Leisure Kunai", value="leisure")
-        ])
-    async def addcurrency(self, ctx: discord.Interaction, currency: app_commands.Choice[str], value: int, user: discord.Member = None):
+        app_commands.Choice(name="Shurikens", value="shuriken"),
+        app_commands.Choice(name="Leisure Kunai", value="leisure")
+    ])
+    async def addcurrency(self, ctx: discord.Interaction, currency: app_commands.Choice[str], value: int,
+                          user: discord.Member = None):
         if ctx.user.id not in config.gods:
             return
         try:
@@ -331,20 +332,20 @@ class Currency(commands.Cog):
             collection = self.client.get_database_collection("users")
             user_doc = collection.update_one({"_id": user2.id}, {"$inc": {currency: value}})
             await ctx.response.send_message(
-                f"{user2.mention}: {value} {config.emojis[currency]} added - Total balance -> {collection.find_one({'_id': user2.id})[currency]} {config.emojis[currency]}", ephemeral=True)
+                f"{user2.mention}: {value} {config.emojis[currency]} added - Total balance -> {collection.find_one({'_id': user2.id})[currency]} {config.emojis[currency]}",
+                ephemeral=True)
         except Exception as er:
             print(er)
             c = await ctx.original_response()
             await c.reply("Error has error, try again")
 
-
     @app_commands.command(name="shop", description="Allows you to purchase items.")
     @app_commands.choices(category=[
-            app_commands.Choice(name="MLBB", value="mlbb"),
-            app_commands.Choice(name="Discord", value="discord"),
-            app_commands.Choice(name="Roles", value="roles"),
-            app_commands.Choice(name="Roblox", value="roblox")
-        ])
+        app_commands.Choice(name="MLBB", value="mlbb"),
+        app_commands.Choice(name="Discord", value="discord"),
+        app_commands.Choice(name="Roles", value="roles"),
+        app_commands.Choice(name="Roblox", value="roblox")
+    ])
     async def shop(self, ctx: discord.Interaction, category: app_commands.Choice[str]):
         await self.monthlyResetShop()
         await self.refreshShop()
@@ -424,7 +425,8 @@ class Currency(commands.Cog):
                 item_embed.set_footer(
                     text=f"This item has been locked - Page: {item_index + 1}/{index_bounds[1] + 1}")
             else:
-                item_embed.set_footer(text=f"Page: {item_index + 1}/{index_bounds[1] + 1} - Purchases: {shop_item['locks']}/5")
+                item_embed.set_footer(
+                    text=f"Page: {item_index + 1}/{index_bounds[1] + 1} - Purchases: {shop_item['locks']}/5")
 
             await shop_message.edit(embed=item_embed)
             shop_reply = await self.client.message_reaction(shop_message, ctx.user, 30)
@@ -534,13 +536,11 @@ class Currency(commands.Cog):
                 with open("data/items.json", "w") as file:
                     json.dump(data, file, indent=4)
 
-
-
                 await shop_message.edit(embed=purchased_embed)
                 return await shop_message.delete(delay=10)
 
-
-    @app_commands.command(name="claim", description=f"Claim {config.shurikenDaily[0]}-{config.shurikenDaily[1]} shurikens every day and {config.shurikenWeekly[0]}-{config.shurikenWeekly[1]} every 7 days.")
+    @app_commands.command(name="claim",
+                          description=f"Claim {config.shurikenDaily[0]}-{config.shurikenDaily[1]} shurikens every day and {config.shurikenWeekly[0]}-{config.shurikenWeekly[1]} every 7 days.")
     async def claim(self, ctx: discord.Interaction):
         msg = await self.verifyUser(ctx)
         if msg is None:
@@ -548,14 +548,18 @@ class Currency(commands.Cog):
         else:
             pass
 
-
         user_collection = self.client.get_database_collection("users")
         user_profile = user_collection.find_one({"_id": ctx.user.id})
 
         if user_profile is None:
-            em = self.client.create_embed("Unknown User",
-                                          "Please do /start before using any of the Bot currency related commands.",
-                                          config.embed_color, ctx.user.name, ctx.user.avatar.url)
+            try:
+                em = self.client.create_embed("Unknown User",
+                                              "Please do /start before using any of the Bot currency related commands.",
+                                              config.embed_color, ctx.user.name, ctx.user.avatar.url)
+            except Exception:
+                em = self.client.create_embed("Unknown User",
+                                              "Please do /start before using any of the Bot currency related commands.",
+                                              config.embed_color)
             await msg.edit(embed=em)
             x = await ctx.original_response()
             return await x.delete(delay=10)
@@ -569,18 +573,29 @@ class Currency(commands.Cog):
             set_day = data['seconds'] + 86400
 
         if ctx.user.id in claims:
-            error = self.client.create_embed("User has already claimed today.",
-                                             f"You have already claimed the daily.",
-                                             config.embed_color, ctx.user.name, ctx.user.avatar.url)
+            try:
+                error = self.client.create_embed("User has already claimed today.",
+                                                 f"You have already claimed the daily.",
+                                                 config.embed_color, ctx.user.name, ctx.user.avatar.url)
+            except Exception:
+                error = self.client.create_embed("User has already claimed today.",
+                                                 f"You have already claimed the daily.",
+                                                 config.embed_color)
 
             error.add_field(name="Time until next claim:", value=f"<t:{set_day}:R>", inline=True)
 
             return await msg.edit(embed=error)
         if data["dotw"] < 7:
             if len(claims) >= config.daily_cap and not chounin in ctx.user.roles:
-                em = self.client.create_embed("Daily Claim Limit has been reached.",
-                                              f"Today's daily claim limit has been reached. Please try again tomorrow.",
-                                              config.embed_color, ctx.user.name, ctx.user.avatar.url)
+                try:
+                    em = self.client.create_embed("Daily Claim Limit has been reached.",
+                                                  f"Today's daily claim limit has been reached. Please try again tomorrow.",
+                                                  config.embed_color, ctx.user.name, ctx.user.avatar.url)
+                except Exception:
+                    em = self.client.create_embed("Daily Claim Limit has been reached.",
+                                                  f"Today's daily claim limit has been reached. Please try again tomorrow.",
+                                                  config.embed_color)
+
                 em.add_field(name="Daily Claim Limit:", value=f"{len(claims)}/{config.daily_cap}", inline=True)
                 em.add_field(name="Time until reset:", value=f"<t:{set_day}:R>", inline=True)
                 return await msg.edit(embed=em)
@@ -598,9 +613,15 @@ class Currency(commands.Cog):
             emoji = config.emojis['shuriken']
             balance = collection.find_one({'_id': userID})['shuriken']
 
-            em: discord.Embed = self.client.create_embed(f"@{ctx.user.name} - Daily - {shurikens} {emoji} Gained.",
-                                                         f"",
-                                                         config.embed_color, ctx.user.name, ctx.user.avatar.url)
+            try:
+                em: discord.Embed = self.client.create_embed(f"@{ctx.user.name} - Daily - {shurikens} {emoji} Gained.",
+                                                             f"",
+                                                             config.embed_color, ctx.user.name, ctx.user.avatar.url)
+            except Exception:
+                m: discord.Embed = self.client.create_embed(f"@{ctx.user.name} - Daily - {shurikens} {emoji} Gained.",
+                                                            f"",
+                                                            config.embed_color)
+
             em.timestamp = datetime.now()
             em.add_field(name="Daily Claim Limit:", value=f"{len(claims) + 1}/{config.daily_cap}", inline=True)
             em.add_field(name="Time until Reset:", value=f"<t:{set_day}:R>", inline=True)
@@ -611,9 +632,14 @@ class Currency(commands.Cog):
             await msg.edit(embed=em)
         else:
             if len(claims) >= config.weekly_cap and chounin not in ctx.user.roles:
-                em = self.client.create_embed("Weekly Claim Limit has been reached.",
-                                              f"The weekly claim limit has been reached. Please try again tomorrow.",
-                                              config.embed_color, ctx.user.name, ctx.user.avatar.url)
+                try:
+                    em = self.client.create_embed("Weekly Claim Limit has been reached.",
+                                                  f"The weekly claim limit has been reached. Please try again tomorrow.",
+                                                  config.embed_color, ctx.user.name, ctx.user.avatar.url)
+                except Exception:
+                    em = self.client.create_embed("Weekly Claim Limit has been reached.",
+                                                  f"The weekly claim limit has been reached. Please try again tomorrow.",
+                                                  config.embed_color)
                 em.add_field(name="Weekly Claim Limit:", value=f"{len(claims)}/{config.weekly_cap}", inline=True)
                 em.add_field(name="Time until reset:", value=f"<t:{set_day}:R>", inline=True)
                 return await msg.edit(embed=em)
@@ -631,10 +657,15 @@ class Currency(commands.Cog):
 
             emoji = config.emojis['shuriken']
             balance = collection.find_one({'_id': userID})['shuriken']
+            try:
+                em: discord.Embed = self.client.create_embed(f"Weekly - {shurikens} {emoji} Gained.",
+                                                             f"",
+                                                             config.embed_color, ctx.user.name, ctx.user.avatar.url)
+            except Exception:
+                em: discord.Embed = self.client.create_embed(f"Weekly - {shurikens} {emoji} Gained.",
+                                                             f"",
+                                                             config.embed_color)
 
-            em: discord.Embed = self.client.create_embed(f"Weekly - {shurikens} {emoji} Gained.",
-                                                         f"",
-                                                         config.embed_color, ctx.user.name, ctx.user.avatar.url)
             em.timestamp = datetime.now()
             em.add_field(name="Weekly Claim Limit:", value=f"{len(claims) + 1}/{config.weekly_cap}", inline=True)
             em.add_field(name="Time until Reset:", value=f"<t:{set_day}:R>", inline=True)
@@ -646,11 +677,6 @@ class Currency(commands.Cog):
             await msg.edit(embed=em)
         await self.UpdateUserLevel(ctx.user, ctx.channel)
 
-
-
-
-
-    
 
 async def setup(client):
     await client.add_cog(Currency(client))
