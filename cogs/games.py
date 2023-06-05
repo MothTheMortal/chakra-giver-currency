@@ -155,18 +155,17 @@ class Games(commands.Cog):
             return await ctx.edit_original_response(embed=em)
 
         async def win():
-            global bet
             em = self.client.create_embed(f"Blackjack", f"You won the game!", config.embed_color,
                                           ctx.user.name, ctx.user.avatar.url)
             if config.calculate_hand_value(player_hand) == 21:
-                pass
+                new = bet
             else:
-                bet = int(bet / 2)
-            em.add_field(name=f"Winning:", value=f"{bet} {emoji}", inline=True)
-            em.add_field(name="New Balance:", value=f"{user_doc[currency] + bet} {emoji}", inline=True)
+                new = int(bet/2)
+            em.add_field(name=f"Winning:", value=f"{new} {emoji}", inline=True)
+            em.add_field(name="New Balance:", value=f"{user_doc[currency] + new} {emoji}", inline=True)
             em = end_add_hand_fields(em)
             em.set_footer(text="You won!")
-            collection.update_one({"_id": ctx.user.id}, {"$inc": {currency: bet}})
+            collection.update_one({"_id": ctx.user.id}, {"$inc": {currency: new}})
             await ctx.edit_original_response(view=None)
 
             return await ctx.edit_original_response(embed=em)
