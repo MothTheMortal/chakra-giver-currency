@@ -132,6 +132,30 @@ class Currency(commands.Cog):
             return None
 
 
+    @app_commands.command(name="addtorole", description="Adds a currency to all users with the role.")
+    @app_commands.default_permissions(administrator=True)
+    @app_commands.choices(currency=[
+            app_commands.Choice(name="Shurikens", value="shuriken"),
+            app_commands.Choice(name="Leisure Kunai", value="leisure"),
+            app_commands.Choice(name="Both", value="both")
+        ])
+    async def addtorole(self, ctx: discord.Interaction, currency: app_commands.Choice[str], role: discord.Role):
+        if ctx.user.id not in config.gods:
+            return
+        collection = self.client.get_database_collection("users")
+        try:
+            if currency.value == "shuriken":
+                for user in role.members:
+                    collection.update_many({"_id": user.id}, {"$inc": {"shuriken": value}})
+            elif currency.value == "leisure":
+                for user in role.members:
+                    collection.update_many({"_id": user.id}, {"$inc": {"leisure": value}})
+            else:
+                for user in role.members:
+                    collection.update_many({"_id": user.id}, {"$inc": {"leisure": value}})
+                    collection.update_many({"_id": user.id}, {"$inc": {"shuriken": value}})
+        except Exception:
+            pass
 
     @app_commands.command(name="addall", description="Adds both currencies to all users who have Genin.")
     @app_commands.default_permissions(administrator=True)
