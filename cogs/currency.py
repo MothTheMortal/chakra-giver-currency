@@ -139,7 +139,7 @@ class Currency(commands.Cog):
             app_commands.Choice(name="Leisure Kunai", value="leisure"),
             app_commands.Choice(name="Both", value="both")
         ])
-    async def addtorole(self, ctx: discord.Interaction, currency: app_commands.Choice[str], role: discord.Role):
+    async def addtorole(self, ctx: discord.Interaction, currency: app_commands.Choice[str], role: discord.Role, value: int):
         if ctx.user.id not in config.gods:
             return
         collection = self.client.get_database_collection("users")
@@ -154,6 +154,8 @@ class Currency(commands.Cog):
                 for user in role.members:
                     collection.update_many({"_id": user.id}, {"$inc": {"leisure": value}})
                     collection.update_many({"_id": user.id}, {"$inc": {"shuriken": value}})
+
+            await ctx.response.send_message(f"Done", ephemeral=True)
         except Exception:
             pass
 
