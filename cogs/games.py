@@ -162,7 +162,6 @@ class Games(commands.Cog):
             else:
                 new = int(bet/2)
             em.add_field(name=f"Winning:", value=f"{new} {emoji}", inline=True)
-            print(user_doc[currency])
             em.add_field(name="New Balance:", value=f"{user_doc[currency] + new} {emoji}", inline=True)
             em = end_add_hand_fields(em)
             em.set_footer(text="You won!")
@@ -175,7 +174,6 @@ class Games(commands.Cog):
             em = self.client.create_embed(f"Blackjack", f"You lost the game!", config.embed_color,
                                           ctx.user.name, ctx.user.avatar.url)
             em.add_field(name=f"Lost: ", value=f"{bet} {emoji}", inline=True)
-            print(user_doc[currency])
             em.add_field(name="New Balance:", value=f"{user_doc[currency] - bet} {emoji}", inline=True)
             em = end_add_hand_fields(em)
             em.set_footer(text="You lost!")
@@ -209,7 +207,6 @@ class Games(commands.Cog):
         # msg = await ctx.original_response()
         player_hand_value = config.calculate_hand_value(player_hand)
         dealer_hand_value = config.calculate_hand_value(dealer_hand)
-        print(user_doc[currency])
         if player_hand_value > 21 and dealer_hand_value > 21:
             return await tie()
         elif player_hand_value > 21:
