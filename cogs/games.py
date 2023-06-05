@@ -155,17 +155,18 @@ class Games(commands.Cog):
             return await ctx.edit_original_response(embed=em)
 
         async def win():
+            global bet
             em = self.client.create_embed(f"Blackjack", f"You won the game!", config.embed_color,
                                           ctx.user.name, ctx.user.avatar.url)
             if config.calculate_hand_value(player_hand) == 21:
-                modifier = 2
+                pass
             else:
-                modifier = 1.5
-            em.add_field(name=f"Winning:", value=f"{int(bet * modifier)} {emoji}", inline=True)
-            em.add_field(name="New Balance:", value=f"{user_doc[currency] + int(bet * modifier)} {emoji}", inline=True)
+                bet = int(bet / 2)
+            em.add_field(name=f"Winning:", value=f"{bet} {emoji}", inline=True)
+            em.add_field(name="New Balance:", value=f"{user_doc[currency] + bet} {emoji}", inline=True)
             em = end_add_hand_fields(em)
             em.set_footer(text="You won!")
-            collection.update_one({"_id": ctx.user.id}, {"$inc": {currency: int(bet * modifier)}})
+            collection.update_one({"_id": ctx.user.id}, {"$inc": {currency: bet}})
             await ctx.edit_original_response(view=None)
 
             return await ctx.edit_original_response(embed=em)
@@ -174,6 +175,7 @@ class Games(commands.Cog):
             em = self.client.create_embed(f"Blackjack", f"You lost the game!", config.embed_color,
                                           ctx.user.name, ctx.user.avatar.url)
             em.add_field(name=f"Lost: ", value=f"{bet} {emoji}", inline=True)
+            print(user_doc[currency])
             em.add_field(name="New Balance:", value=f"{user_doc[currency] - bet} {emoji}", inline=True)
             em = end_add_hand_fields(em)
             em.set_footer(text="You lost!")
@@ -207,7 +209,7 @@ class Games(commands.Cog):
         # msg = await ctx.original_response()
         player_hand_value = config.calculate_hand_value(player_hand)
         dealer_hand_value = config.calculate_hand_value(dealer_hand)
-
+        print(user_doc[currency])
         if player_hand_value > 21 and dealer_hand_value > 21:
             return await tie()
         elif player_hand_value > 21:

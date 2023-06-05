@@ -302,7 +302,7 @@ class Cog_Manager(commands.Cog):
 
         await channel.send(embed=em)
 
-        data_collection.update_one({"_id": 1}, {"$set": {"jackpot": 0}})
+        data_collection.update_one({"_id": 1}, {"$set": {"jackpot": 100}})
         data_collection.update_one({"_id": 1}, {"$set": {"jackpot_users": []}})
 
 
