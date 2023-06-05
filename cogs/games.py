@@ -162,6 +162,7 @@ class Games(commands.Cog):
             else:
                 new = int(bet/2)
             em.add_field(name=f"Winning:", value=f"{new} {emoji}", inline=True)
+            print(user_doc[currency])
             em.add_field(name="New Balance:", value=f"{user_doc[currency] + new} {emoji}", inline=True)
             em = end_add_hand_fields(em)
             em.set_footer(text="You won!")
