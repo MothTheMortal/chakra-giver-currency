@@ -7,7 +7,7 @@ import config
 from json import *
 from traceback import format_exception
 from discord.utils import get
-from discord import app_commands
+from discord import app_commands, Embed
 import time
 import datetime
 from random import choice
@@ -356,7 +356,7 @@ class Cog_Manager(commands.Cog):
             data = json.load(f)
         giveaways_list = [i for i in data.keys()]
         for msg_id in giveaways_list:
-            if int(data[msg_id]["end_time"]) < time.time() and data[msg_id]["ended"] != "True"::
+            if int(data[msg_id]["end_time"]) < time.time() and data[msg_id]["ended"] != "True":
                 await self.giveaway_finish(str(msg_id))
 
     async def day_handler(self):
