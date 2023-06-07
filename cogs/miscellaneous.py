@@ -325,7 +325,6 @@ class Miscellaneous(commands.Cog):
         if message_id not in data.keys():
             return await ctx.response.send_message("Giveaway not found!", ephemeral=True)
 
-        winners = []
         giveaway_channel = ctx.guild.get_channel(int(data[message_id]["channel_id"]))
         giveaway_msg = await giveaway_channel.fetch_message(int(message_id))
         format_time = data[message_id]["format_time"]
@@ -333,12 +332,12 @@ class Miscellaneous(commands.Cog):
         embed = giveaway_msg.embeds[0]
 
 
+        winners = []
 
         for i in range(len(data[message_id]["winners"])):
-            winner = choice(data[message_id]["participants"])
-            winner = f"<@{winner}>"
+            winner = f'<@{choice(data[message_id]["participants"])}>'
             while winner in winners:
-                winner = choice(data[message_id]["participants"])
+                winner = f'<@{choice(data[message_id]["participants"])}>'
             winners.append(winner)
 
         await ctx.response.send_message(f"🎉 **GIVEAWAY** 🎉 -> {giveaway_msg.jump_url}\n**Prize**: {prize}\n**Winner(s)**: {', '.join(winners)}")
