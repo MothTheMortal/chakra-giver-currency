@@ -340,7 +340,7 @@ class Miscellaneous(commands.Cog):
                 winner = f'<@{choice(data[message_id]["participants"])}>'
             winners.append(winner)
 
-        await ctx.response.send_message(f"🎉 **GIVEAWAY** 🎉 -> {giveaway_msg.jump_url}\n**Prize**: {prize}\n**Winner(s)**: {', '.join(winners)}")
+        await ctx.response.send_message(f"🎉 **GIVEAWAY RE-ROLLED** 🎉 -> {giveaway_msg.jump_url}\n**Prize**: {prize}\n**New Winner(s)**: {', '.join(winners)}")
 
         description = f"""
                                                 Re-rolled Winner(s): {", ".join(winners)}\nEnded at: {format_time}
