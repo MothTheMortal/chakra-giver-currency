@@ -328,7 +328,7 @@ class Miscellaneous(commands.Cog):
         winners = []
 
         for i in range(len(data[message_id]["winners"])):
-            winner = random.choice(data[message_id]["participants"])
+            winner = choice(data[message_id]["participants"])
             winner = f"<@{winner}>"
             while winner in winners:
                 winner = random.choice(data[message_id]["participants"])
