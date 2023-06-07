@@ -241,6 +241,18 @@ class Cog_Manager(commands.Cog):
         else:
             raise error
 
+    @commands.Cog.listener()
+    async def on_ready(self):
+        print(f"Logged in as {self.client.user.name}#{self.client.user.discriminator}")
+        try:
+            synced = await self.client.tree.sync()
+            print(f"Synced {len(synced)} commands")
+        except Exception as e:
+            print(e)
+        await self.client.change_presence(activity=discord.Game(name="Vynx Simulator"))
+        await self.handler_loop()
+
+
     async def giveaway_finish(self, message_id: str):
         with open("data/giveaways.json", "r") as f:
             giveaway_data = json.load(f)[message_id]
@@ -395,17 +407,6 @@ class Cog_Manager(commands.Cog):
             await self.day_handler()
             await self.giveaway_handler()
             await asyncio.sleep(5)
-
-    @commands.Cog.listener()
-    async def on_ready(self):
-        print(f"Logged in as {self.client.user.name}#{self.client.user.discriminator}")
-        try:
-            synced = await self.client.tree.sync()
-            print(f"Synced {len(synced)} commands")
-        except Exception as e:
-            print(e)
-        await self.client.change_presence(activity=discord.Game(name="Vynx Simulator"))
-        await self.handler_loop()
 
     async def startJackpot(self):
         em = self.client.create_embed(":moneybag: Jackpot :moneybag:", f"This week's jackpot has started!\nMake sure to participate in the jackpot!", config.embed_color)

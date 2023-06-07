@@ -314,8 +314,27 @@ class Miscellaneous(commands.Cog):
             }
             json.dump(data, f, indent=4)
 
+    @app_commands.commnamd(name="reroll-giveaway", description="Rerolls a giveaway.")
+    @app_commands.default_permissions(administrator=True)
+    @app_commands.describe(message_id="Message ID of the giveaway to reroll.")
+    async def reroll(self, ctx: discord.Interaction, message_id: str):
 
+        with open("data/giveaways.json", "r") as file:
+            data = json.load(file)
 
+        if message_id not in data.keys():
+            return await ctx.response.send_message("Giveaway not found!", ephemeral=True)
+
+        winners = []
+
+        for i in range(len(data[message_id]["winners"])):
+            winner = random.choice(data[message_id]["participants"])
+            winner = f"<@{winner}>"
+            while winner in winners:
+                winner = random.choice(data[message_id]["participants"])
+            winners.append(winner)
+        await ctx.response.send_message(f"🎉 **GIVEAWAY** 🎉 -> {giveaway_msg.jump_url}\n**Prize**: {prize}\n**Winner(s)**: {', '.join(win)}")
+    
 
 
 
