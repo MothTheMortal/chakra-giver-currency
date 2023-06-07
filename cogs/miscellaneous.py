@@ -338,7 +338,7 @@ class Miscellaneous(commands.Cog):
             winner = choice(data[message_id]["participants"])
             winner = f"<@{winner}>"
             while winner in winners:
-                winner = random.choice(data[message_id]["participants"])
+                winner = choice(data[message_id]["participants"])
             winners.append(winner)
 
         await ctx.response.send_message(f"🎉 **GIVEAWAY** 🎉 -> {giveaway_msg.jump_url}\n**Prize**: {prize}\n**Winner(s)**: {', '.join(winners)}")
