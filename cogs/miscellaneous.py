@@ -326,6 +326,12 @@ class Miscellaneous(commands.Cog):
             return await ctx.response.send_message("Giveaway not found!", ephemeral=True)
 
         winners = []
+        giveaway_channel = ctx.guild.get_channel(int(data[message_id]["channel_id"]))
+        giveaway_msg = await giveaway_channel.fetch_message(int(message_id))
+        format_time = data[message_id]["format_time"]
+        embed = giveaway_msg.embeds[0]
+
+
 
         for i in range(len(data[message_id]["winners"])):
             winner = choice(data[message_id]["participants"])
@@ -335,7 +341,11 @@ class Miscellaneous(commands.Cog):
             winners.append(winner)
         await ctx.response.send_message(f"🎉 **GIVEAWAY** 🎉 -> {giveaway_msg.jump_url}\n**Prize**: {prize}\n**Winner(s)**: {', '.join(win)}")
 
-
+        description = f"""
+                                                Re-rolled Winner(s): {", ".join(win)}\nEnded at: {format_time}
+                                                """
+        embed.description = description
+        await giveaway_msg.edit(embed=embed)
 
 
     @app_commands.command(name="start", description="Start your journey on Chakra Giver!")
