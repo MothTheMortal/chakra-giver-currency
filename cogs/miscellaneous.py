@@ -344,7 +344,7 @@ class Miscellaneous(commands.Cog):
         await ctx.response.send_message(f"🎉 **GIVEAWAY** 🎉 -> {giveaway_msg.jump_url}\n**Prize**: {prize}\n**Winner(s)**: {', '.join(winners)}")
 
         description = f"""
-                                                Re-rolled Winner(s): {", ".join(win)}\nEnded at: {format_time}
+                                                Re-rolled Winner(s): {", ".join(winners)}\nEnded at: {format_time}
                                                 """
         embed.description = description
         await giveaway_msg.edit(embed=embed)
