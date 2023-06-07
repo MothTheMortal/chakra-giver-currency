@@ -314,7 +314,7 @@ class Miscellaneous(commands.Cog):
             }
             json.dump(data, f, indent=4)
 
-    @app_commands.commnamd(name="reroll-giveaway", description="Rerolls a giveaway.")
+    @app_commands.command(name="reroll-giveaway", description="Rerolls a giveaway.")
     @app_commands.default_permissions(administrator=True)
     @app_commands.describe(message_id="Message ID of the giveaway to reroll.")
     async def reroll(self, ctx: discord.Interaction, message_id: str):
@@ -334,7 +334,7 @@ class Miscellaneous(commands.Cog):
                 winner = random.choice(data[message_id]["participants"])
             winners.append(winner)
         await ctx.response.send_message(f"🎉 **GIVEAWAY** 🎉 -> {giveaway_msg.jump_url}\n**Prize**: {prize}\n**Winner(s)**: {', '.join(win)}")
-    
+
 
 
 
