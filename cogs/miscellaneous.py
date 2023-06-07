@@ -262,7 +262,7 @@ class Miscellaneous(commands.Cog):
                            winners="Number of winners.", )
     @app_commands.default_permissions(administrator=True)
     async def giveaway(self, ctx: discord.Interaction, host: discord.Member, channel: discord.TextChannel, winners: int,
-                       days: float, hours: float, minutes: float, prize: str, role: discord.Role = "",
+                       days: float, hours: float, minutes: float, prize: str, role: discord.Role = None,
                        thumbnail_url: str = ""):
 
         duration_secs = days * 86400 + hours * 3600 + minutes * 60
@@ -281,7 +281,7 @@ class Miscellaneous(commands.Cog):
         giveaway_embed.set_footer(text="React to join giveaway.")
         giveaway_embed.set_author(name=host.name, icon_url=host.avatar)
 
-        if role != "":
+        if role is not None:
             giveaway_embed.add_field(name="Role Required:", value=role.mention)
 
         if thumbnail_url is not None:
@@ -307,7 +307,7 @@ class Miscellaneous(commands.Cog):
                 "end_time": str(unix_end_datetime),
                 "title": title,
                 "thumbnail_url": thumbnail_url,
-                "role_id": str(role.id) if role != "" else "",
+                "role_id": str(role.id) if role is not None else "",
                 "channel_id": str(channel.id),
                 "message_id": str(msg.id),
                 "ended": "False"
