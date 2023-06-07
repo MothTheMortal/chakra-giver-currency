@@ -300,7 +300,7 @@ class Cog_Manager(commands.Cog):
                     f"🎉 **GIVEAWAY** 🎉 -> {giveaway_msg.jump_url}\n**Prize**: {prize}\n**Winner(s)**: {', '.join(win)}")
 
 
-                giveaway_embed = Embed(title=title, description=description, color=0xa22aaf, timestamp=datetime.now())
+                giveaway_embed = Embed(title=title, description=description, color=0xa22aaf, timestamp=datetime.datetime.now())
                 giveaway_embed.set_footer(text="Giveaway Ended.")
                 giveaway_embed.set_author(name=host.name, icon_url=host.avatar)
                 if role:
@@ -322,7 +322,7 @@ class Cog_Manager(commands.Cog):
                                                     Winner(s): None\nEnded at: {format_time}
                                                     """
 
-                giveaway_embed = Embed(title=title, description=description, color=discord.Color.red(), timestamp=datetime.now())
+                giveaway_embed = Embed(title=title, description=description, color=discord.Color.red(), timestamp=datetime.datetime.now())
                 giveaway_embed.set_footer(text="Giveaway Ended.")
                 giveaway_embed.set_author(name=host.name, icon_url=host.avatar)
 
