@@ -346,7 +346,7 @@ class Cog_Manager(commands.Cog):
             try:
                 data[message_id]["winners"] = winners_list
             except Exception:
-                print("Not enough users, cant add to json file")
+                data[message_id]["winners"] = []
 
         with open("data/giveaways.json", "w") as f:
             json.dump(data, f, indent=4)
