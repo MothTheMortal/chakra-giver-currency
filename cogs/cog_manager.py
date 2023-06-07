@@ -1,5 +1,6 @@
 import asyncio
 import json
+from typing import List
 
 import discord
 from discord.ext import commands
@@ -341,12 +342,16 @@ class Cog_Manager(commands.Cog):
 
         with open("data/giveaways.json", "r") as f:
             data = json.load(f)
-            data[message_id]["ended"] = "True"
 
-            try:
-                data[message_id]["winners"] = winners_list
-            except Exception:
-                data[message_id]["winners"] = []
+        data[message_id]["ended"] = "True"
+        data[message_id]["participants"] = users
+        await giveaway_msg.clear_reactions()
+        try:
+            data[message_id]["winners"] = winners_list
+        except Exception:
+            data[message_id]["winners"] = []
+
+
 
         with open("data/giveaways.json", "w") as f:
             json.dump(data, f, indent=4)
