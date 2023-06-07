@@ -329,6 +329,7 @@ class Miscellaneous(commands.Cog):
         giveaway_channel = ctx.guild.get_channel(int(data[message_id]["channel_id"]))
         giveaway_msg = await giveaway_channel.fetch_message(int(message_id))
         format_time = data[message_id]["format_time"]
+        prize = data[message_id]["prize"]
         embed = giveaway_msg.embeds[0]
 
 
@@ -339,7 +340,8 @@ class Miscellaneous(commands.Cog):
             while winner in winners:
                 winner = random.choice(data[message_id]["participants"])
             winners.append(winner)
-        await ctx.response.send_message(f"🎉 **GIVEAWAY** 🎉 -> {giveaway_msg.jump_url}\n**Prize**: {prize}\n**Winner(s)**: {', '.join(win)}")
+
+        await ctx.response.send_message(f"🎉 **GIVEAWAY** 🎉 -> {giveaway_msg.jump_url}\n**Prize**: {prize}\n**Winner(s)**: {', '.join(winners)}")
 
         description = f"""
                                                 Re-rolled Winner(s): {", ".join(win)}\nEnded at: {format_time}
