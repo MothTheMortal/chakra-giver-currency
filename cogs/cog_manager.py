@@ -37,6 +37,15 @@ class Cog_Manager(commands.Cog):
     #
     #     await ctx.response.send_message("test")
 
+    # @app_commands.command(name="snipe")
+    # async def snipe(self, ctx: discord.Interaction):
+    #     pass
+    #
+    # @commands.Cog.listener()
+    # async def on_message_delete(self, message: discord.Message):
+    #     with open("data/deleted_msg.txt", "w") as f:
+    #         f.write(f"{message.author}")
+
     @app_commands.command(name="help",
                           description="Shows information on available functionalities and how to use them.")
     @app_commands.choices(
@@ -224,8 +233,6 @@ class Cog_Manager(commands.Cog):
 
         await ctx.response.send_message(embed=embed)
 
-
-
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
         if isinstance(error, TimeoutError) or isinstance(error, commands.CommandNotFound):
@@ -233,9 +240,159 @@ class Cog_Manager(commands.Cog):
         else:
             raise error
 
+    async def giveaway_finish(self, message_id: str):
+        with open("data/giveaways.json", "r") as f:
+            giveaway_data = json.load(f)[message_id]
+
+        try:
+            winners = giveaway_data["winners"]
+            guild: discord.Guild = self.client.get_guild(int(giveaway_data["guild_id"]))
+            format_time = giveaway_data["format_time"]
+            prize = giveaway_data["prize"]
+            title = giveaway_data["title"]
+            host = guild.get_member(int(giveaway_data["host_id"]))
+            thumbnail_url = giveaway_data["thumbnail_url"]
+            channel = guild.get_channel(int(giveaway_data["channel_id"]))
+
+            if giveaway_data["role_id"] != "":
+                role = guild.get_role(int(giveaway_data["role_id"]))
+            else:
+                role = False
+
+            giveaway_msg = await channel.fetch_message(int(message_id))
+
+            reactions = giveaway_msg.reactions[0]
+
+            users = []
+
+            async for user in reactions.users():
+                try:
+                    if user.bot or user.id == host.id:
+                        pass
+                    else:
+                        if role:
+                            if role in user.roles:
+                                users.append(user.id)
+                        else:
+                            users.append(user.id)
+                except Exception:
+                    pass
+
+            if len(users) >= winners:
+
+                winners_list = []
+                while len(winners_list) < winners:
+                    winner = choice(users)
+                    if winner not in winners_list:
+                        winners_list.append(winner)
+
+                win = []
+
+                for i in winners_list:
+                    if guild.get_member(i) is not None:
+                        win.append(f"<@{i}>")
+
+                description = f"""
+                                        Winner(s): {", ".join(win)}\nEnded at: {format_time}
+                                        """
+
+                await channel.send(
+                    f"🎉 **GIVEAWAY** 🎉 -> {giveaway_msg.jump_url}\n**Prize**: {prize}\n**Winner(s)**: {', '.join(win)}")
+
+
+                giveaway_embed = Embed(title=title, description=description, color=0xa22aaf, timestamp=datetime.now())
+                giveaway_embed.set_footer(text="Giveaway Ended.")
+                giveaway_embed.set_author(name=host.name, icon_url=host.avatar)
+                if role:
+
+                    giveaway_embed.add_field(name="Role Required:", value=role.mention)
+
+                if thumbnail_url != "":
+                    try:
+                        giveaway_embed.set_thumbnail(url=thumbnail_url)
+                    except Exception:
+                        pass
+
+                await giveaway_msg.edit(embed=giveaway_embed)
+            else:
+
+                await channel.send(f"🎉 **GIVEAWAY** 🎉\n**Prize**: {prize}\n**Winner(s)**: No one")
+
+                description = f"""
+                                                    Winner(s): None\nEnded at: {format_time}
+                                                    """
+
+                giveaway_embed = Embed(title=title, description=description, color=discord.Color.red(), timestamp=datetime.now())
+                giveaway_embed.set_footer(text="Giveaway Ended.")
+                giveaway_embed.set_author(name=host.name, icon_url=host.avatar)
+
+                if role:
+                    giveaway_embed.add_field(name="Role Required:", value=role.mention)
+
+                if thumbnail_url != "":
+                    try:
+                        giveaway_embed.set_thumbnail(url=thumbnail_url)
+                    except Exception:
+                        pass
+                await giveaway_msg.edit(embed=giveaway_embed)
+
+        except Exception as ex:
+            print(ex)
+
+        with open("data/giveaways.json", "r") as f:
+            data = json.load(f)
+            data[message_id]["ended"] = "True"
+
+            try:
+                data[message_id]["winners"] = winners_list
+            except Exception:
+                print("Not enough users, cant add to json file")
+
+        with open("data/giveaways.json", "w") as f:
+            json.dump(data, f, indent=4)
+
+    async def giveaway_handler(self):
+        with open("data/giveaways.json", "r") as f:
+            data = json.load(f)
+        giveaways_list = [i for i in data.keys()]
+        for msg_id in giveaways_list:
+            if int(data[msg_id]["end_time"]) < time.time():
+                await self.giveaway_finish(str(msg_id))
+
+    async def day_handler(self):
+        try:
+            with open("data/current_day.json", "r") as file:
+                data = json.load(file)
+                dotw = data["dotw"]
+                new = data['seconds'] + 86400
+        except Exception:
+            pass
+        if time.time() > new:
+            with open("data/current_day.json", "w") as file:
+                data["seconds"] = new
+                if data['dotw'] < 7:
+                    data['dotw'] += 1
+                else:
+                    data['dotw'] = 1
+
+                if data['dotw'] == 7:
+                    await self.runJackpot()
+                if data['dotw'] == 1:
+                    await self.startJackpot()
+
+                print(f"Day {dotw}, data resetting")
+                json.dump(data, file, indent=4)
+            collection = self.client.get_database_collection("data")
+            collection.update_one({"_id": 1}, {"$set": {"daily_claims": []}})
+
+    async def handler_loop(self):
+        while True:
+            await self.day_handler()
+            await self.giveaway_handler()
+            await asyncio.sleep(5)
+
     @commands.Cog.listener()
     async def on_ready(self):
-        print("Runnning update")
         print(f"Logged in as {self.client.user.name}#{self.client.user.discriminator}")
         try:
             synced = await self.client.tree.sync()
@@ -243,33 +400,7 @@ class Cog_Manager(commands.Cog):
         except Exception as e:
             print(e)
         await self.client.change_presence(activity=discord.Game(name="Vynx Simulator"))
-        while True:
-            await asyncio.sleep(1)
-            try:
-                with open("data/current_day.json", "r") as file:
-                    data = json.load(file)
-                    dotw = data["dotw"]
-                    new = data['seconds'] + 86400
-            except Exception:
-                pass
-            if time.time() > new:
-
-                with open("data/current_day.json", "w") as file:
-                    data["seconds"] = new
-                    if data['dotw'] < 7:
-                        data['dotw'] += 1
-                    else:
-                        data['dotw'] = 1
-
-                    if data['dotw'] == 7:
-                        await self.runJackpot()
-                    if data['dotw'] == 1:
-                        await self.startJackpot()
-
-                    print(f"Day {dotw}, data resetting")
-                    json.dump(data, file, indent=4)
-                collection = self.client.get_database_collection("data")
-                collection.update_one({"_id": 1}, {"$set": {"daily_claims": []}})
+        await self.handler_loop()
 
     async def startJackpot(self):
         em = self.client.create_embed(":moneybag: Jackpot :moneybag:", f"This week's jackpot has started!\nMake sure to participate in the jackpot!", config.embed_color)

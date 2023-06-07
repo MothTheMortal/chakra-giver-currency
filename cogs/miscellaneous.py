@@ -255,16 +255,17 @@ class Miscellaneous(commands.Cog):
     #         json.dump(data, file, indent=4)
     #     collection = self.client.get_database_collection("data")
     #     collection.update_one({"_id": 1}, {"$set": {"daily_claims": []}})
-    @app_commands.command(name="role_giveaway", description="Starts a giveaway.")
+
+
+    @app_commands.command(name="giveaway", description="Starts a giveaway.")
     @app_commands.describe(host="User who's hosting the giveaway", channel="Channel where the giveaway will be hosted.",
                            winners="Number of winners.", )
     @app_commands.default_permissions(administrator=True)
     async def giveaway(self, ctx: discord.Interaction, host: discord.Member, channel: discord.TextChannel, winners: int,
-                       days: float, hours: float, minutes: float, prize: str, role: discord.Role = None,
-                       thumbnail_url: str = None):
+                       days: float, hours: float, minutes: float, prize: str, role: discord.Role = "",
+                       thumbnail_url: str = ""):
 
         duration_secs = days * 86400 + hours * 3600 + minutes * 60
-
         delta_time = timedelta(days=days, hours=hours, minutes=minutes)
         unix_end_datetime = int((datetime.now() + delta_time).timestamp())
 
@@ -280,6 +281,9 @@ class Miscellaneous(commands.Cog):
         giveaway_embed.set_footer(text="React to join giveaway.")
         giveaway_embed.set_author(name=host.name, icon_url=host.avatar)
 
+        if role != "":
+            giveaway_embed.add_field(name="Role Required:", value=role.mention)
+
         if thumbnail_url is not None:
             try:
                 giveaway_embed.set_thumbnail(url=thumbnail_url)
@@ -289,117 +293,31 @@ class Miscellaneous(commands.Cog):
         await ctx.response.send_message(f"Giveaway started for {prize}!", ephemeral=True)
 
         msg = await channel.send(embed=giveaway_embed)
-
         await msg.add_reaction("🎉")
 
-        await asyncio.sleep(duration_secs)
+        with open("data/giveaways.json", "r") as f:
+            data = json.load(f)
+        with open("data/giveaways.json", "w") as f:
+            data[str(msg.id)] = {
+                "guild_id": str(ctx.guild.id),
+                "host_id": str(host.id),
+                "winners": winners,
+                "format_time": format_time,
+                "prize": prize,
+                "end_time": str(unix_end_datetime),
+                "title": title,
+                "thumbnail_url": thumbnail_url,
+                "role_id": str(role.id) if role != "" else "",
+                "channel_id": str(channel.id),
+                "message_id": str(msg.id),
+                "ended": "False"
+            }
+            json.dump(data, f, indent=4)
 
-        giveaway_msg = await channel.fetch_message(msg.id)
 
-        reactions = giveaway_msg.reactions[0]
 
-        users = []
 
-        async for user in reactions.users():
-            try:
-                if user.bot or user.id == host.id:
-                    pass
-                else:
-                    if role is not None:
-                        if role not in user.roles:
-                            pass
-                        else:
-                            users.append(user.id)
-                    else:
-                        users.append(user.id)
-            except Exception:
-                pass
-        print(users)
-        if len(users) >= winners:
 
-            winners_list = []
-            while len(winners_list) < winners:
-                winner = choice(users)
-                if winner not in winners_list:
-                    winners_list.append(winner)
-
-            winners_list = [ctx.guild.get_member(i).mention for i in winners_list]
-            description = f"""
-                            Winner(s): {", ".join(winners_list)}\nEnded at: {format_time}
-                            """
-
-            await channel.send(
-                f"🎉 **GIVEAWAY** 🎉 -> {giveaway_msg.jump_url}\n**Prize**: {prize}\n**Winner(s)**: {', '.join(winners_list)}")
-
-            giveaway_embed = Embed(title=title, description=description, color=0xa22aaf, timestamp=datetime.now())
-            giveaway_embed.set_footer(text="Giveaway Ended.")
-            giveaway_embed.set_author(name=host.name, icon_url=host.avatar)
-            if thumbnail_url is not None:
-                try:
-                    giveaway_embed.set_thumbnail(url=thumbnail_url)
-                except Exception:
-                    pass
-
-            await giveaway_msg.edit(embed=giveaway_embed)
-
-        else:
-
-            await ctx.channel.send(f"🎉 **GIVEAWAY** 🎉\n**Prize**: {prize}\n**Winner(s)**: No one")
-
-    @app_commands.command(name="reroll_role_giveaway", description="Re-rolls a giveaway.")
-    @app_commands.describe(
-        giveaway_msg="ID of the giveaway message which will be re-rolled.",
-        host="User who's hosting the giveaway",
-        channel="Channel where the giveaway will be hosted.",
-        winners="Number of winners."
-    )
-    @app_commands.default_permissions(administrator=True)
-    async def reroll_giveaway(self, ctx: discord.Interaction, giveaway_msg: str, host: discord.Member,
-                              winners: int, channel: discord.TextChannel, prize: str, role: discord.Role = None):
-        giveaway_msg = await channel.fetch_message(int(giveaway_msg))
-
-        title = "🎉 " + prize + " 🎉"
-        reactions = giveaway_msg.reactions[0]
-
-        users = []
-
-        async for user in reactions.users():
-            try:
-
-                if user.bot or user.id == host.id:
-                    pass
-                else:
-                    if role is not None:
-                        if role not in user.roles:
-                            pass
-                        else:
-                            users.append(user.id)
-                    else:
-                        users.append(user.id)
-
-            except Exception:
-                pass
-
-        winners_list = []
-        while len(winners_list) < winners:
-            winner = choice(users)
-            if winner not in winners_list:
-                winners_list.append(winner)
-
-        winners_list = [ctx.guild.get_member(i).mention for i in winners_list]
-        description = f"""
-                                Re-Rolled Winner(s): {", ".join(winners_list)}
-                                """
-
-        await channel.send(
-            f"🎉 **GIVEAWAY** 🎉 -> {giveaway_msg.jump_url}\n**Prize**: {prize}\n**Re-Rolled Winner(s)**: {', '.join(winners_list)}")
-
-        giveaway_embed = Embed(title=title, description=description, color=0xa22aaf, timestamp=datetime.now())
-        giveaway_embed.set_footer(text="Giveaway Ended.")
-        giveaway_embed.set_author(name=host.name, icon_url=host.avatar)
-        await giveaway_msg.edit(embed=giveaway_embed)
-
-        await ctx.response.send_message("Re-rolled!", ephemeral=True)
 
     @app_commands.command(name="start", description="Start your journey on Chakra Giver!")
     async def start(self, ctx: discord.Interaction):
