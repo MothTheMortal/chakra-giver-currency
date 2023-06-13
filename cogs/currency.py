@@ -181,30 +181,57 @@ class Currency(commands.Cog):
     @app_commands.command(name="leaderboard", description="Shows the leaderboard for a currency.")
     @app_commands.choices(currency=[
         app_commands.Choice(name="Shurikens", value="shuriken"),
-        app_commands.Choice(name="Leisure Kunai", value="leisure")
+        app_commands.Choice(name="Leisure Kunai", value="leisure"),
+        app_commands.Choice(name="Level", value="level"),
     ])
     async def lb(self, ctx: discord.Interaction, currency: app_commands.Choice[str], places: int = 10):
         currency = currency.value
-        emoji = config.emojis[currency]
+        if currency == "level":
+            tag = "highet leveled"
+        else:
+            emoji = config.emojis[currency]
+            tag = "wealthiest"
         user_collection = self.client.get_database_collection("users")
 
         class LeaderBoardPosition:
-            def __init__(self, id, coins, name):
+            def __init__(self, id, coins, name, exp=None):
                 self.id = id
                 self.coins = coins
                 self.name = name
+                self.exp = exp
 
         leaderboard = []
 
         for user in user_collection.find():
             if not user["_id"] in config.gods:
-                leaderboard.append(LeaderBoardPosition(user["_id"], int(user[currency]), user["name"]))
+                if currency == "level":
+                    leaderboard.append(LeaderBoardPosition(user["_id"], int(user[currency]), user["name"], int(user["experience"])))
+                else:
+                    leaderboard.append(LeaderBoardPosition(user["_id"], int(user[currency]), user["name"]))
+
 
         top = sorted(leaderboard, key=lambda x: x.coins, reverse=True)
+        if currency == "level":
+            sorted_users = []
+            current_level = None
+            same_level_users = []
 
+            for user in top:
+                level = user.coins
+                exp = user.exp
+
+                if level != current_level:
+                    sorted_users.extend(sorted(same_level_users, key=lambda x: x.exp, reverse=True))
+                    same_level_users = []
+                    current_level = level
+
+                same_level_users.append(user)
+
+            sorted_users.extend(sorted(same_level_users, key=lambda x: x.exp, reverse=True))
+            top = sorted_users
         leaderboard_embed = self.client.create_embed(
             "Chakra Giver Leaderboard",
-            f"The top {places} wealthiest people in all of the Crib!",
+            f"The top {places} {tag} people in all of the Crib!",
             config.embed_color
         )
 
@@ -213,11 +240,21 @@ class Currency(commands.Cog):
                 value_one = top[i - 1].id
                 value_two = top[i - 1].coins
                 value_three = top[i - 1].name
-                leaderboard_embed.add_field(
-                    name=f"{i}. {value_two} {emoji}",
-                    value=f"<@{value_one}> - {value_three}",
-                    inline=False
-                )
+                if currency == "level":
+                    exp = top[i - 1].exp
+                    percentage = int(exp / config.expRequired[f"{value_two}"] * 100)
+
+                    leaderboard_embed.add_field(
+                        name=f"{i}. Level {value_two} ({percentage}%)",
+                        value=f"<@{value_one}> - {value_three}",
+                        inline=False
+                    )
+                else:
+                    leaderboard_embed.add_field(
+                        name=f"{i}. {value_two} {emoji}",
+                        value=f"<@{value_one}> - {value_three}",
+                        inline=False
+                    )
             except IndexError:
                 leaderboard_embed.add_field(name=f"**<< {i} >>**", value="N/A | NaN", inline=False)
 
