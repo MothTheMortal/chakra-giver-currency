@@ -187,7 +187,7 @@ class Currency(commands.Cog):
     async def lb(self, ctx: discord.Interaction, currency: app_commands.Choice[str], places: int = 10):
         currency = currency.value
         if currency == "level":
-            tag = "highet leveled"
+            tag = "highest leveled"
         else:
             emoji = config.emojis[currency]
             tag = "wealthiest"
