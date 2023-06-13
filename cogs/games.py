@@ -88,6 +88,25 @@ class Games(commands.Cog):
             await ctx.response.send_message(embed=em)
             x = await ctx.original_response()
             return await x.delete(delay=5)
+
+        if bet > 1000 and currency.value == "shuriken":
+            em = self.client.create_embed("Invalid Blackjack Bet",
+                                          f"You cannot bet more than 1000 {currency.name} in Blackjack!",
+                                          config.embed_color, ctx.user.name, ctx.user.avatar.url)
+
+            await ctx.response.send_message(embed=em)
+            x = await ctx.original_response()
+            return await x.delete(delay=5)
+
+        if bet > 5000 and currency.value == "leisure":
+            em = self.client.create_embed("Invalid Blackjack Bet",
+                                          f"You cannot bet more than 5000 {currency.name} in Blackjack!",
+                                          config.embed_color, ctx.user.name, ctx.user.avatar.url)
+
+            await ctx.response.send_message(embed=em)
+            x = await ctx.original_response()
+            return await x.delete(delay=5)
+
         collection = self.client.get_database_collection("users")
         user_doc = collection.find_one({"_id": ctx.user.id})
         if user_doc[currency.value] < bet:
@@ -157,9 +176,9 @@ class Games(commands.Cog):
             em = self.client.create_embed(f"Blackjack", f"You won the game!", config.embed_color,
                                           ctx.user.name, ctx.user.avatar.url)
             if config.calculate_hand_value(player_hand) == 21:
-                new = bet
+                new = int(bet * .75)
             else:
-                new = int(bet/2)
+                new = int(bet * .25)
             em.add_field(name=f"Winning:", value=f"{new} {emoji}", inline=True)
             em.add_field(name="New Balance:", value=f"{user_doc[currency] + new} {emoji}", inline=True)
             em = end_add_hand_fields(em)

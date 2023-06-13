@@ -175,6 +175,8 @@ class Cog_Manager(commands.Cog):
             embed.add_field(name="Rules:", value="", inline=False)
             embed.add_field(name="- User must bet at least 100 of either currencies to play the game.", value="",
                             inline=False)
+            embed.add_field(name="- User cannot bet more than 1000 shurikens or more than 5000 leisure kunais in Blackjack.", value="",
+                            inline=False)
             embed.add_field(
                 name="- When the game starts, User is given 2 cards, and the dealer is given 2 card as well, but only one of his card is displayed.",
                 value="", inline=False)
@@ -200,9 +202,9 @@ class Cog_Manager(commands.Cog):
             embed.add_field(
                 name="- If 10 + Your total hand value without the ace is below or equals to 21, then the ace has the value of 10. Otherwise, it has a value of 1",
                 value="", inline=False)
-            embed.add_field(name="- If you win by getting hand value of 21, you win 2x your bet.", value="",
+            embed.add_field(name="- If you win by getting hand value of 21, you win 1.75x your bet.", value="",
                             inline=False)
-            embed.add_field(name="- If you win by getting higher hand value than the dealer, you win 1.5x your bet.",
+            embed.add_field(name="- If you win by getting higher hand value than the dealer, you win 1.25x your bet.",
                             value="", inline=False)
             embed.add_field(name="- If you tie with the dealer, your bet is returned.", value="", inline=False)
         elif choice == 10:
