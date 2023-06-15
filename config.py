@@ -169,8 +169,9 @@ shurikenDaily = [100, 300]
 shurikenWeekly = [500, 1000]
 kunaiMultiplier = 10
 gtn_tries = 3
-daily_cap = 50
-weekly_cap = 25
+max_buy = 3
+daily_cap = 20
+weekly_cap = 5
 channel_ids = {
     "shop": 1110640513012478053,
     "redeem": 1110640513012478053,

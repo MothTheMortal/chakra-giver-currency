@@ -213,9 +213,9 @@ class Cog_Manager(commands.Cog):
             embed.add_field(name="Rules:", value="", inline=False)
             embed.add_field(name="- An item can be purchased by reacting to the 'Star' emoji in the middle.", value="",
                             inline=False)
-            embed.add_field(name="- Each item in the shop can be purchased a maximum of 5 times.", value="",
+            embed.add_field(name=f"- Each item in the shop can be purchased a maximum of {config.max_buy} times.", value="",
                             inline=False)
-            embed.add_field(name="- After 5 purchases, the item will be locked and unable to be purchased.", value="",
+            embed.add_field(name=f"- After {config.max_buy} purchases, the item will be locked and unable to be purchased.", value="",
                             inline=False)
             embed.add_field(name="- The purchase limit for items is reset every month.", value="", inline=False)
 

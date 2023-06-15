@@ -76,7 +76,7 @@ class Currency(commands.Cog):
 
             for key in data.keys():
                 for i in range(len(data[key])):
-                    if data[key][i]["locks"] >= 5:
+                    if data[key][i]["locks"] >= config.max_buy:
                         data[key][i]["lock"] = "True"
                         data[key][i]["locks"] = 0
         with open("data/items.json", "w") as file:
@@ -463,7 +463,7 @@ class Currency(commands.Cog):
                     text=f"This item has been locked - Page: {item_index + 1}/{index_bounds[1] + 1}")
             else:
                 item_embed.set_footer(
-                    text=f"Page: {item_index + 1}/{index_bounds[1] + 1} - Purchases: {shop_item['locks']}/5")
+                    text=f"Page: {item_index + 1}/{index_bounds[1] + 1} - Purchases: {shop_item['locks']}/{config.max_buy}")
 
             await shop_message.edit(embed=item_embed)
             shop_reply = await self.client.message_reaction(shop_message, ctx.user, 30)
