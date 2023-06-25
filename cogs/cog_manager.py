@@ -42,7 +42,7 @@ class Cog_Manager(commands.Cog):
                 "experience": user_doc["experience"]
             }
         data_collection = self.client.get_database_collection("data")
-        doc = data_collection.find({"_id": 1})
+        doc = data_collection.find_one({"_id": 1})
         old_stats = doc["daily_stats"]
         new_stats = old_stats | data
 
