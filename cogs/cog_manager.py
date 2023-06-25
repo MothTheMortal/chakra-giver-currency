@@ -43,12 +43,11 @@ class Cog_Manager(commands.Cog):
                 "experience": user_doc["experience"]
             }
         data_collection = self.client.get_database_collection("data")
-        # doc = data_collection.find_one({"_id": 1})
-        # old_stats = doc["daily_stats"]
-        # new_stats = old_stats | data
-        #
-        # data_collection.update_one({"_id": 1}, {"$set": {"daily_stats": new_stats}})
-        data_collection.update_one({"_id": 1}, {"$push": {"daily_stats": data}})
+        doc = data_collection.find_one({"_id": 1})
+        old_stats = doc["daily_stats"]
+        new_stats = old_stats | data
+
+        data_collection.update_one({"_id": 1}, {"$set": {"daily_stats": new_stats}})
 
         await ctx.edit_original_response(content="Done")
 
