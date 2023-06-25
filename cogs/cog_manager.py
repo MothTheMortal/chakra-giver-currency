@@ -258,7 +258,6 @@ class Cog_Manager(commands.Cog):
         await self.client.change_presence(activity=discord.Game(name="Vynx Simulator"))
         await self.handler_loop()
 
-
     async def giveaway_finish(self, message_id: str):
         with open("data/giveaways.json", "r") as f:
             giveaway_data = json.load(f)[message_id]
@@ -413,12 +412,11 @@ class Cog_Manager(commands.Cog):
             collection = self.client.get_database_collection("data")
             collection.update_one({"_id": 1}, {"$set": {"daily_claims": []}})
 
-
     async def save_stats(self):
         collection = self.client.get_database_collection("users")
         today_date = datetime.date.today().strftime("%Y/%m/%d")
         data = {today_date: {}}
-        
+
         for user_doc in collection.find({}):
             data[today_date][str(user_doc["_id"])] = {
                 "shuriken": user_doc["shuriken"],
@@ -432,7 +430,6 @@ class Cog_Manager(commands.Cog):
         new_stats = old_stats | data
 
         data_collection.update_one({"_id": 1}, {"$set": {"daily_stats": new_stats}})
-
 
     async def handler_loop(self):
         while True:
