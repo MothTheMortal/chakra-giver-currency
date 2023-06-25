@@ -42,7 +42,8 @@ class Cog_Manager(commands.Cog):
                 "experience": user_doc["experience"]
             }
         data_collection = self.client.get_database_collection("data")
-        old_stats = data_collection.find({"_id": 1})["daily_stats"]
+        doc = data_collection.find({"_id": 1})
+        old_stats = doc["daily_stats"]
         new_stats = old_stats | data
 
         data_collection.update_one({"_id": 1}, {"$set": {"daily_stats": new_stats}})
