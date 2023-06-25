@@ -25,27 +25,29 @@ class Cog_Manager(commands.Cog):
         collection = self.client.get_database_collection("users")
         exec(cmd)
 
-    # @app_commands.command(name="test")
-    # @app_commands.default_permissions(administrator=True)
-    # async def test(self, ctx: discord.Interaction):
-    #     z = dict()
-    #     for emoji in ctx.guild.emojis:
-    #         emoji: discord.Emoji = emoji
-    #         if emoji.name in config.emojis.keys():
-    #             z[emoji.name] = f"<:{emoji.name}:{emoji.id}>"
-    #     print(dumps(z, indent=4))
-    #
-    #
-    #     await ctx.response.send_message("test")
+    @app_commands.command(name="test")
+    @app_commands.default_permissions(administrator=True)
+    async def test(self, ctx: discord.Interaction):
+        await ctx.response.defer()
+        collection = self.client.get_database_collection("users")
+        today_date = datetime.date.today().strftime("%Y/%m/%d")
+        data = dict(today_date=dict())
 
-    # @app_commands.command(name="snipe")
-    # async def snipe(self, ctx: discord.Interaction):
-    #     pass
-    #
-    # @commands.Cog.listener()
-    # async def on_message_delete(self, message: discord.Message):
-    #     with open("data/deleted_msg.txt", "w") as f:
-    #         f.write(f"{message.author}")
+        for user_doc in collection.find({}):
+            data[today_date][user_doc["_id"]] = {
+                "shuriken": user_doc["shuriken"],
+                "leisure": user_doc["leisure"],
+                "level": user_doc["level"],
+                "experience": user_doc["experience"]
+            }
+        data_collection = self.client.get_database_collection("data")
+        old_stats = data_collection.find({"_id": 1})["daily_stats"]
+        new_stats = old_stats | data
+
+        data_collection.update_one({"_id": 1}, {"$set": {"daily_stats": new_stats}})
+
+        await ctx.edit_original_response(content=new_stats)
+
 
     @app_commands.command(name="help",
                           description="Shows information on available functionalities and how to use them.")
@@ -384,9 +386,14 @@ class Cog_Manager(commands.Cog):
                 data = json.load(file)
                 dotw = data["dotw"]
                 new = data['seconds'] + 86400
+
         except Exception:
             pass
-        if time.time() > new:
+
+        if time.time() > new:  # Next Day
+
+            await self.save_stats()
+
             with open("data/current_day.json", "w") as file:
                 data["seconds"] = new
                 if data['dotw'] < 7:
@@ -403,6 +410,26 @@ class Cog_Manager(commands.Cog):
                 json.dump(data, file, indent=4)
             collection = self.client.get_database_collection("data")
             collection.update_one({"_id": 1}, {"$set": {"daily_claims": []}})
+
+
+    async def save_stats(self):
+        collection = self.client.get_database_collection("users")
+        today_date = datetime.date.today().strftime("%Y/%m/%d")
+        data = dict(today_date=dict())
+
+        for user_doc in collection.find({}):
+            data[today_date][user_doc["_id"]] = {
+                "shuriken": user_doc["shuriken"],
+                "leisure": user_doc["leisure"],
+                "level": user_doc["level"],
+                "experience": user_doc["experience"]
+            }
+        data_collection = self.client.get_database_collection("data")
+        old_stats = data_collection.find({"_id": 1})["daily_stats"]
+        new_stats = old_stats | data
+
+        data_collection.update_one({"_id": 1}, {"$set": {"daily_stats": new_stats}})
+
 
     async def handler_loop(self):
         while True:
