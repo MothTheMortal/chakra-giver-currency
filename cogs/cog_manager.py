@@ -35,7 +35,7 @@ class Cog_Manager(commands.Cog):
             today_date: {}
         }
         for user_doc in collection.find({}):
-            data[today_date][user_doc["_id"]] = {
+            data[today_date][str(user_doc["_id"])] = {
                 "shuriken": user_doc["shuriken"],
                 "leisure": user_doc["leisure"],
                 "level": user_doc["level"],
