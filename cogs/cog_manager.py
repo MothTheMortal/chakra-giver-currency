@@ -30,7 +30,8 @@ class Cog_Manager(commands.Cog):
     async def test(self, ctx: discord.Interaction):
         await ctx.response.defer()
         collection = self.client.get_database_collection("users")
-        today_date = datetime.date.today().strftime("%Y/%m/%d")
+        # today_date = datetime.date.today().strftime("%Y/%m/%d")
+        today_date = "2023/06/26"
         data = {
             today_date: {}
         }
@@ -42,13 +43,14 @@ class Cog_Manager(commands.Cog):
                 "experience": user_doc["experience"]
             }
         data_collection = self.client.get_database_collection("data")
-        doc = data_collection.find_one({"_id": 1})
-        old_stats = doc["daily_stats"]
-        new_stats = old_stats | data
+        # doc = data_collection.find_one({"_id": 1})
+        # old_stats = doc["daily_stats"]
+        # new_stats = old_stats | data
+        #
+        # data_collection.update_one({"_id": 1}, {"$set": {"daily_stats": new_stats}})
+        data_collection.update_one({"_id": 1}, {"$push": {"daily_stats": data}})
 
-        data_collection.update_one({"_id": 1}, {"$set": {"daily_stats": new_stats}})
-
-        await ctx.edit_original_response(content=new_stats)
+        await ctx.edit_original_response(content="Done")
 
 
     @app_commands.command(name="help",
