@@ -25,31 +25,30 @@ class Cog_Manager(commands.Cog):
         collection = self.client.get_database_collection("users")
         exec(cmd)
 
-    @app_commands.command(name="test")
-    @app_commands.default_permissions(administrator=True)
-    async def test(self, ctx: discord.Interaction):
-        await ctx.response.defer()
-        collection = self.client.get_database_collection("users")
-        # today_date = datetime.date.today().strftime("%Y/%m/%d")
-        today_date = "2023/06/26"
-        data = {
-            today_date: {}
-        }
-        for user_doc in collection.find({}):
-            data[today_date][str(user_doc["_id"])] = {
-                "shuriken": user_doc["shuriken"],
-                "leisure": user_doc["leisure"],
-                "level": user_doc["level"],
-                "experience": user_doc["experience"]
-            }
-        data_collection = self.client.get_database_collection("data")
-        doc = data_collection.find_one({"_id": 1})
-        old_stats = doc["daily_stats"]
-        new_stats = old_stats | data
-
-        data_collection.update_one({"_id": 1}, {"$set": {"daily_stats": new_stats}})
-
-        await ctx.edit_original_response(content="Done")
+    # @app_commands.command(name="test")
+    # @app_commands.default_permissions(administrator=True)
+    # async def test(self, ctx: discord.Interaction):
+    #     await ctx.response.defer()
+    #     collection = self.client.get_database_collection("users")
+    #     today_date = datetime.date.today().strftime("%Y/%m/%d")
+    #     data = {
+    #         today_date: {}
+    #     }
+    #     for user_doc in collection.find({}):
+    #         data[today_date][str(user_doc["_id"])] = {
+    #             "shuriken": user_doc["shuriken"],
+    #             "leisure": user_doc["leisure"],
+    #             "level": user_doc["level"],
+    #             "experience": user_doc["experience"]
+    #         }
+    #     data_collection = self.client.get_database_collection("data")
+    #     doc = data_collection.find_one({"_id": 1})
+    #     old_stats = doc["daily_stats"]
+    #     new_stats = old_stats | data
+    #
+    #     data_collection.update_one({"_id": 1}, {"$set": {"daily_stats": new_stats}})
+    #
+    #     await ctx.edit_original_response(content="Done")
 
 
     @app_commands.command(name="help",
@@ -418,17 +417,18 @@ class Cog_Manager(commands.Cog):
     async def save_stats(self):
         collection = self.client.get_database_collection("users")
         today_date = datetime.date.today().strftime("%Y/%m/%d")
-        data = dict(today_date=dict())
-
+        data = {today_date: {}}
+        
         for user_doc in collection.find({}):
-            data[today_date][user_doc["_id"]] = {
+            data[today_date][str(user_doc["_id"])] = {
                 "shuriken": user_doc["shuriken"],
                 "leisure": user_doc["leisure"],
                 "level": user_doc["level"],
                 "experience": user_doc["experience"]
             }
         data_collection = self.client.get_database_collection("data")
-        old_stats = data_collection.find({"_id": 1})["daily_stats"]
+        doc = data_collection.find_one({"_id": 1})
+        old_stats = doc["daily_stats"]
         new_stats = old_stats | data
 
         data_collection.update_one({"_id": 1}, {"$set": {"daily_stats": new_stats}})
