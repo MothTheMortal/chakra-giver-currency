@@ -31,8 +31,9 @@ class Cog_Manager(commands.Cog):
         await ctx.response.defer()
         collection = self.client.get_database_collection("users")
         today_date = datetime.date.today().strftime("%Y/%m/%d")
-        data = dict(today_date=dict())
-
+        data = {
+            today_date: {}
+        }
         for user_doc in collection.find({}):
             data[today_date][user_doc["_id"]] = {
                 "shuriken": user_doc["shuriken"],
