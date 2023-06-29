@@ -13,7 +13,8 @@ import datetime
 from random import choice
 import plotly.express as px
 import io
-
+import kaleido
+print(kaleido.__version__)
 class Cog_Manager(commands.Cog):
     def __init__(self, client):
         self.client = client
