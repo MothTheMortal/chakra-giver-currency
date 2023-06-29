@@ -53,9 +53,42 @@ class Cog_Manager(commands.Cog):
         if stat.value in ['shuriken', 'leisure']:
             x = []
             y = []
+            count = 0
             for key in user_data.keys():
+                count += 1
+                if count > 7:
+                    break
                 x.append(key)
                 y.append(int(user_data[key][stat.value]))
+
+            fig = px.line(x=x, y=y, title=f"{user.display_name}'s Shuriken Chart - Past Week",
+                          labels={"x": "Date", "y": "Shuriken"}, height=500,
+                          width=500, markers=True, template="plotly_dark")
+            image = fig.to_image(format="png", width=500, height=500)
+            data = io.BytesIO(image)
+            file = discord.File(fp=data, filename="chart.png")
+            await ctx.response.send_message(file=file)
+        else:
+            x = []
+            exp = []
+            level = []
+            y = []
+            count = 0
+            for key in user_data.keys():
+                count += 1
+                if count > 7:
+                    break
+                x.append(key)
+                exp.append(int(user_data[key]["experience"]))
+                level.append(int(user_data[key]["level"]))
+            for index in range(len(level)):
+                xp = 0
+                for i in range(1, level[index]):
+                    xp += config.expRequired[f"{i}"]
+                xp += exp[index]
+                y.append(xp)
+            print(y)
+
 
             fig = px.line(x=x, y=y, title=f"{user.display_name}'s Shuriken Chart - Past Week",
                           labels={"x": "Date", "y": "Shuriken"}, height=500,
