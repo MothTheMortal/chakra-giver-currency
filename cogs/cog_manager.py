@@ -14,7 +14,7 @@ from random import choice
 import plotly.express as px
 import io
 import kaleido
-print(kaleido.__version__)
+
 class Cog_Manager(commands.Cog):
     def __init__(self, client):
         self.client = client
@@ -63,7 +63,7 @@ class Cog_Manager(commands.Cog):
             image = fig.to_image(format="png", width=500, height=500)
             data = io.BytesIO(image)
             file = discord.File(fp=data, filename="chart.png")
-            await ctx.response.send_message(attachments=[file])
+            await ctx.response.send_message(file=file)
 
 
 
