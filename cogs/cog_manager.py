@@ -59,7 +59,9 @@ class Cog_Manager(commands.Cog):
                           labels={"x": "Date", "y": "Shuriken"}, height=500,
                           width=500, markers=True, template="plotly_dark")
             image = fig.to_image(format="png", width=500, height=500)
-            return image
+            data =io.BytesIO(image)
+            file = discord.File(fp=data, filename="chart.png")
+            await ctx.response.send_message(attachments=[file])
 
 
 
