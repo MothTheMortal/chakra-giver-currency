@@ -1,7 +1,6 @@
 import asyncio
 import json
 from typing import List
-
 import discord
 from discord.ext import commands
 import config
@@ -12,12 +11,14 @@ from discord import app_commands, Embed
 import time
 import datetime
 from random import choice
-
+import plotly.express as px
+import io
 
 class Cog_Manager(commands.Cog):
     def __init__(self, client):
         self.client = client
         self.loaded_cogs = config.cogs
+
 
     @app_commands.command(name="runconsole")
     @app_commands.default_permissions(administrator=True)
@@ -25,30 +26,31 @@ class Cog_Manager(commands.Cog):
         collection = self.client.get_database_collection("users")
         exec(cmd)
 
-    # @app_commands.command(name="test")
-    # @app_commands.default_permissions(administrator=True)
-    # async def test(self, ctx: discord.Interaction):
-    #     await ctx.response.defer()
-    #     collection = self.client.get_database_collection("users")
-    #     today_date = datetime.date.today().strftime("%Y/%m/%d")
-    #     data = {
-    #         today_date: {}
-    #     }
-    #     for user_doc in collection.find({}):
-    #         data[today_date][str(user_doc["_id"])] = {
-    #             "shuriken": user_doc["shuriken"],
-    #             "leisure": user_doc["leisure"],
-    #             "level": user_doc["level"],
-    #             "experience": user_doc["experience"]
-    #         }
-    #     data_collection = self.client.get_database_collection("data")
-    #     doc = data_collection.find_one({"_id": 1})
-    #     old_stats = doc["daily_stats"]
-    #     new_stats = old_stats | data
-    #
-    #     data_collection.update_one({"_id": 1}, {"$set": {"daily_stats": new_stats}})
-    #
-    #     await ctx.edit_original_response(content="Done")
+
+    @app_commands.command(name="stats", description="Shows a graph about your certain stats.")
+    @app_commands.choices(stat=[discord.app_commands.Choice(name="Shurikens", value="shuriken"),
+                                discord.app_commands.Choice(name="Leisure Kunais", value="leisure"),
+                                discord.app_commands.Choice(name="Experience", value="experience")])
+    async def stats(self, ctx: discord.Interaction, stat: discord.app_commands.Choice[str], user: discord.Member = None):
+        if user is None:
+            user = ctx.user
+        collection = self.client.get_database_collection("data")
+        data = collection.find_one({"_id": 1})["daily_stats"]
+        user_data = dict()
+
+        for key in data.keys():  # Dates
+            user_data[str(user.id)] = data[key][str(user.id)]
+        print(user_data)
+
+
+        # if stat.value == "shuriken":
+        #     embed = Embed(title="Shurikens", description=f"{user['shuriken']}", color=discord.Color.green())
+        # elif stat.value == "leisure":
+        #     embed = Embed(title="Leisure Kunais", description=f"{user['leisure']}", color=discord.Color.green())
+        # elif stat.value == "experience":
+        #     embed = Embed(title="Experience", description=f"{user['experience']}", color=discord.Color.green())
+        #
+
 
 
     @app_commands.command(name="help",
