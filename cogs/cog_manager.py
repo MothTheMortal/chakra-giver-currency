@@ -36,20 +36,30 @@ class Cog_Manager(commands.Cog):
             user = ctx.user
         collection = self.client.get_database_collection("data")
         data = collection.find_one({"_id": 1})["daily_stats"]
+
         user_data = dict()
+        for key in data.keys():
+            try:
+                user_data[key] = data[key][str(user.id)]
+            except Exception:
+                pass
 
-        for key in data.keys():  # Dates
-            user_data[str(user.id)] = data[key][str(user.id)]
-        print(user_data)
+        if len(user_data.keys()) < 5:
+            embed = self.client.create_embed(title="Not enough statistics collected.", description="", color=discord.Color.red())
+            await ctx.response.send_message(embed=embed, ephemeral=True)
 
 
-        # if stat.value == "shuriken":
-        #     embed = Embed(title="Shurikens", description=f"{user['shuriken']}", color=discord.Color.green())
-        # elif stat.value == "leisure":
-        #     embed = Embed(title="Leisure Kunais", description=f"{user['leisure']}", color=discord.Color.green())
-        # elif stat.value == "experience":
-        #     embed = Embed(title="Experience", description=f"{user['experience']}", color=discord.Color.green())
-        #
+        if stat.value in ['shuriken', 'leisure']:
+
+            for key in user_data.keys():
+                x = key
+                y = int(user_data[key][stat.value])
+
+            fig = px.line(x=x, y=y, title=f"{user.display_name}'s Shuriken Chart - Past Week",
+                          labels={"x": "Date", "y": "Shuriken"}, height=500,
+                          width=500, markers=True, template="plotly_dark")
+            image = fig.to_image(format="png", width=500, height=500)
+            return image
 
 
 
