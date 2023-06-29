@@ -87,10 +87,10 @@ class Cog_Manager(commands.Cog):
                     xp += config.expRequired[f"{i}"]
                 xp += exp[index]
                 y.append(xp)
-            print(y)
 
 
-            fig = px.line(x=x, y=y, title=f"{user.display_name}'s Shuriken Chart - Past Week",
+
+            fig = px.line(x=x, y=y, title=f"{user.display_name}'s Experience Chart - Past Week",
                           labels={"x": "Date", "y": "Shuriken"}, height=500,
                           width=500, markers=True, template="plotly_dark")
             image = fig.to_image(format="png", width=500, height=500)
