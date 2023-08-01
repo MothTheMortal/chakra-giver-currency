@@ -320,12 +320,10 @@ class Cog_Manager(commands.Cog):
         host = guild.get_member(int(giveaway_data["host_id"]))
         thumbnail_url = giveaway_data["thumbnail_url"]
         channel = guild.get_channel(int(giveaway_data["channel_id"]))
-        print(channel.name)
         if giveaway_data["role_id"] != "":
             role = guild.get_role(int(giveaway_data["role_id"]))
         else:
             role = False
-        print(message_id)
         giveaway_msg = await channel.fetch_message(int(message_id))
 
         reactions = giveaway_msg.reactions[0]
@@ -425,8 +423,10 @@ class Cog_Manager(commands.Cog):
         giveaways_list = [i for i in data.keys()]
         for msg_id in giveaways_list:
             if int(data[msg_id]["end_time"]) < time.time() and data[msg_id]["ended"] != "True":
-                print(msg_id)
-                await self.giveaway_finish(str(msg_id))
+                try:
+                    await self.giveaway_finish(str(msg_id))
+                except:
+                    pass
 
     async def day_handler(self):
         try:
