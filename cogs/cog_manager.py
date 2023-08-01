@@ -320,12 +320,12 @@ class Cog_Manager(commands.Cog):
         host = guild.get_member(int(giveaway_data["host_id"]))
         thumbnail_url = giveaway_data["thumbnail_url"]
         channel = guild.get_channel(int(giveaway_data["channel_id"]))
-
+        print(channel.name)
         if giveaway_data["role_id"] != "":
             role = guild.get_role(int(giveaway_data["role_id"]))
         else:
             role = False
-
+        print(message_id)
         giveaway_msg = await channel.fetch_message(int(message_id))
 
         reactions = giveaway_msg.reactions[0]
