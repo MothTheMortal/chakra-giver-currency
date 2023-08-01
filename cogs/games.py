@@ -77,6 +77,14 @@ class Games(commands.Cog):
     @app_commands.describe(bet="The amount of money you want to bet (Minimum 100)",
                            currency="The currency you want to bet in", )
     async def blackjack(self, ctx: discord.Interaction, currency: app_commands.Choice[str], bet: int):
+
+        em = self.client.create_embed("Temporarily Disabled.",
+                                      "Currency-gain related commands have been disabled temporarily by Vynx.",
+                                      discord.Color.red())
+        await ctx.response.send_message(embed=em)
+        x = await ctx.original_response()
+        return await x.delete(delay=10)
+
         if await self.checkUser(ctx, ctx.user):
             return
 
@@ -330,6 +338,13 @@ class Games(commands.Cog):
     ])
     async def gtn(self, ctx: discord.Interaction, currency: app_commands.Choice[str], bet: int):
 
+        em = self.client.create_embed("Temporarily Disabled.",
+                                      "Currency-gain related commands have been disabled temporarily by Vynx.",
+                                      discord.Color.red())
+        await ctx.response.send_message(embed=em)
+        x = await ctx.original_response()
+        return await x.delete(delay=10)
+
         if await self.checkUser(ctx, ctx.user):
             return
 
@@ -464,6 +479,14 @@ class Games(commands.Cog):
     @app_commands.choices(currency=[app_commands.Choice(name="Shurikens", value="shuriken"),
                                     app_commands.Choice(name="Leisure Kunai", value="leisure")])
     async def coinflip(self, ctx: discord.Interaction, currency: app_commands.Choice[str], bet: int):
+
+        em = self.client.create_embed("Temporarily Disabled.",
+                                      "Currency-gain related commands have been disabled temporarily by Vynx.",
+                                      discord.Color.red())
+        await ctx.response.send_message(embed=em)
+        x = await ctx.original_response()
+        return await x.delete(delay=10)
+
 
         if await self.checkUser(ctx, ctx.user):
             return

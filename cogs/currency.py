@@ -579,6 +579,12 @@ class Currency(commands.Cog):
     @app_commands.command(name="claim",
                           description=f"Claim {config.shurikenDaily[0]}-{config.shurikenDaily[1]} shurikens every day and {config.shurikenWeekly[0]}-{config.shurikenWeekly[1]} every 7 days.")
     async def claim(self, ctx: discord.Interaction):
+
+        em = self.client.create_embed("Temporarily Disabled.", "Currency-gain related commands have been disabled temporarily by Vynx.", discord.Color.red())
+        await ctx.response.send_message(embed=em)
+        x = await ctx.original_response()
+        return await x.delete(delay=10)
+
         msg = await self.verifyUser(ctx)
         if msg is None:
             return
@@ -600,6 +606,8 @@ class Currency(commands.Cog):
             await msg.edit(embed=em)
             x = await ctx.original_response()
             return await x.delete(delay=10)
+
+
 
         collection = self.client.get_database_collection("data")
         data = collection.find_one({"_id": 1})
