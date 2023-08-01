@@ -312,96 +312,96 @@ class Cog_Manager(commands.Cog):
             giveaway_data = json.load(f)[message_id]
 
 
-    winners = giveaway_data["winners"]
-    guild: discord.Guild = self.client.get_guild(int(giveaway_data["guild_id"]))
-    format_time = giveaway_data["format_time"]
-    prize = giveaway_data["prize"]
-    title = giveaway_data["title"]
-    host = guild.get_member(int(giveaway_data["host_id"]))
-    thumbnail_url = giveaway_data["thumbnail_url"]
-    channel = guild.get_channel(int(giveaway_data["channel_id"]))
+        winners = giveaway_data["winners"]
+        guild: discord.Guild = self.client.get_guild(int(giveaway_data["guild_id"]))
+        format_time = giveaway_data["format_time"]
+        prize = giveaway_data["prize"]
+        title = giveaway_data["title"]
+        host = guild.get_member(int(giveaway_data["host_id"]))
+        thumbnail_url = giveaway_data["thumbnail_url"]
+        channel = guild.get_channel(int(giveaway_data["channel_id"]))
 
-    if giveaway_data["role_id"] != "":
-        role = guild.get_role(int(giveaway_data["role_id"]))
-    else:
-        role = False
+        if giveaway_data["role_id"] != "":
+            role = guild.get_role(int(giveaway_data["role_id"]))
+        else:
+            role = False
 
-    giveaway_msg = await channel.fetch_message(int(message_id))
+        giveaway_msg = await channel.fetch_message(int(message_id))
 
-    reactions = giveaway_msg.reactions[0]
+        reactions = giveaway_msg.reactions[0]
 
-    users = []
+        users = []
 
-    async for user in reactions.users():
-        try:
-            if user.bot or user.id == host.id:
-                pass
-            else:
-                if role:
-                    if role in user.roles:
-                        users.append(user.id)
+        async for user in reactions.users():
+            try:
+                if user.bot or user.id == host.id:
+                    pass
                 else:
-                    users.append(user.id)
-        except Exception:
-            pass
-
-    if len(users) >= winners:
-
-        winners_list = []
-        while len(winners_list) < winners:
-            winner = choice(users)
-            if winner not in winners_list:
-                winners_list.append(winner)
-
-        win = []
-
-        for i in winners_list:
-            if guild.get_member(i) is not None:
-                win.append(f"<@{i}>")
-
-        description = f"""
-                                Winner(s): {", ".join(win)}\nEnded at: {format_time}
-                                """
-
-        await channel.send(
-            f"🎉 **GIVEAWAY** 🎉 -> {giveaway_msg.jump_url}\n**Prize**: {prize}\n**Winner(s)**: {', '.join(win)}")
-
-
-        giveaway_embed = Embed(title=title, description=description, color=0xa22aaf, timestamp=datetime.datetime.now())
-        giveaway_embed.set_footer(text="Giveaway Ended.")
-        giveaway_embed.set_author(name=host.name, icon_url=host.avatar)
-        if role:
-
-            giveaway_embed.add_field(name="Role Required:", value=role.mention)
-
-        if thumbnail_url != "":
-            try:
-                giveaway_embed.set_thumbnail(url=thumbnail_url)
+                    if role:
+                        if role in user.roles:
+                            users.append(user.id)
+                    else:
+                        users.append(user.id)
             except Exception:
                 pass
 
-        await giveaway_msg.edit(embed=giveaway_embed)
-    else:
+        if len(users) >= winners:
 
-        await channel.send(f"🎉 **GIVEAWAY** 🎉\n**Prize**: {prize}\n**Winner(s)**: No one")
+            winners_list = []
+            while len(winners_list) < winners:
+                winner = choice(users)
+                if winner not in winners_list:
+                    winners_list.append(winner)
 
-        description = f"""
-                                            Winner(s): None\nEnded at: {format_time}
-                                            """
+            win = []
 
-        giveaway_embed = Embed(title=title, description=description, color=discord.Color.red(), timestamp=datetime.datetime.now())
-        giveaway_embed.set_footer(text="Giveaway Ended.")
-        giveaway_embed.set_author(name=host.name, icon_url=host.avatar)
+            for i in winners_list:
+                if guild.get_member(i) is not None:
+                    win.append(f"<@{i}>")
 
-        if role:
-            giveaway_embed.add_field(name="Role Required:", value=role.mention)
+            description = f"""
+                                    Winner(s): {", ".join(win)}\nEnded at: {format_time}
+                                    """
 
-        if thumbnail_url != "":
-            try:
-                giveaway_embed.set_thumbnail(url=thumbnail_url)
-            except Exception:
-                pass
-        await giveaway_msg.edit(embed=giveaway_embed)
+            await channel.send(
+                f"🎉 **GIVEAWAY** 🎉 -> {giveaway_msg.jump_url}\n**Prize**: {prize}\n**Winner(s)**: {', '.join(win)}")
+
+
+            giveaway_embed = Embed(title=title, description=description, color=0xa22aaf, timestamp=datetime.datetime.now())
+            giveaway_embed.set_footer(text="Giveaway Ended.")
+            giveaway_embed.set_author(name=host.name, icon_url=host.avatar)
+            if role:
+
+                giveaway_embed.add_field(name="Role Required:", value=role.mention)
+
+            if thumbnail_url != "":
+                try:
+                    giveaway_embed.set_thumbnail(url=thumbnail_url)
+                except Exception:
+                    pass
+
+            await giveaway_msg.edit(embed=giveaway_embed)
+        else:
+
+            await channel.send(f"🎉 **GIVEAWAY** 🎉\n**Prize**: {prize}\n**Winner(s)**: No one")
+
+            description = f"""
+                                                Winner(s): None\nEnded at: {format_time}
+                                                """
+
+            giveaway_embed = Embed(title=title, description=description, color=discord.Color.red(), timestamp=datetime.datetime.now())
+            giveaway_embed.set_footer(text="Giveaway Ended.")
+            giveaway_embed.set_author(name=host.name, icon_url=host.avatar)
+
+            if role:
+                giveaway_embed.add_field(name="Role Required:", value=role.mention)
+
+            if thumbnail_url != "":
+                try:
+                    giveaway_embed.set_thumbnail(url=thumbnail_url)
+                except Exception:
+                    pass
+            await giveaway_msg.edit(embed=giveaway_embed)
 
         with open("data/giveaways.json", "r") as f:
             data = json.load(f)
