@@ -67,7 +67,7 @@ class Miscellaneous(commands.Cog):
 
         if user_profile is None:
             em = self.client.create_embed("Unknown User",
-                                          "Please do /start before using any of the Bot currency related commands.",
+                                          "Please do /start before using_ any of the Bot currency related commands.",
                                           config.embed_color)
             await ctx.response.send_message(embed=em)
             x = await ctx.original_response()
@@ -433,7 +433,6 @@ class Miscellaneous(commands.Cog):
         em.set_thumbnail(url=None)
         em.set_image(url=gif_url)
         await ctx.response.send_message(embed=em)
-
 
     @app_commands.command(name="tickle", description="Tickles someone!")
     async def tickle(self, ctx: discord.Interaction, user: discord.Member):
