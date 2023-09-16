@@ -363,6 +363,7 @@ class Currency(commands.Cog):
             currency = currency.value
             if user is None:
                 user2 = ctx.user
+                user2 = ctx.user
             else:
                 user2 = user
             await self.client.database_user_preload(user2)
