@@ -15,6 +15,7 @@ import plotly.express as px
 import io
 import kaleido
 
+
 class Cog_Manager(commands.Cog):
     def __init__(self, client):
         self.client = client
