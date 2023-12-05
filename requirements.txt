@@ -6,3 +6,4 @@ pymongo~=4.3.3
 aiohttp~=3.8.4
 yarl~=1.9.1
 transformers~=4.32.0
+pandas

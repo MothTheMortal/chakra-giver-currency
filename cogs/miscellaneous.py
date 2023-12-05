@@ -289,9 +289,10 @@ class Miscellaneous(commands.Cog):
                 giveaway_embed.set_thumbnail(url=thumbnail_url)
             except Exception:
                 pass
-
-        await ctx.response.send_message(f"Giveaway started for {prize}!", ephemeral=True)
-
+        try:
+            await ctx.response.send_message(f"Giveaway started for {prize}!", ephemeral=True)
+        except:
+            pass
         msg = await channel.send(embed=giveaway_embed)
         await msg.add_reaction("🎉")
 
