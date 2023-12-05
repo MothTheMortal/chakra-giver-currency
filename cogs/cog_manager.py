@@ -11,8 +11,8 @@ from discord import app_commands, Embed
 import time
 import datetime
 from random import choice
-import kaleido
-import plotly.express as px
+# import kaleido
+# import plotly.express as px
 import io
 
 
@@ -29,75 +29,75 @@ class Cog_Manager(commands.Cog):
         exec(cmd)
 
 
-    @app_commands.command(name="stats", description="Shows a graph about your certain stats.")
-    @app_commands.choices(stat=[discord.app_commands.Choice(name="Shurikens", value="shuriken"),
-                                discord.app_commands.Choice(name="Leisure Kunais", value="leisure"),
-                                discord.app_commands.Choice(name="Experience", value="experience")])
-    async def stats(self, ctx: discord.Interaction, stat: discord.app_commands.Choice[str], user: discord.Member = None):
-        if user is None:
-            user = ctx.user
-        collection = self.client.get_database_collection("data")
-        data = collection.find_one({"_id": 1})["daily_stats"]
-
-        user_data = dict()
-        for key in data.keys():
-            try:
-                user_data[key] = data[key][str(user.id)]
-            except Exception:
-                pass
-
-        if len(user_data.keys()) < 5:
-            embed = self.client.create_embed(title="Not enough statistics collected.", description="", color=discord.Color.red())
-            await ctx.response.send_message(embed=embed, ephemeral=True)
-
-
-        if stat.value in ['shuriken', 'leisure']:
-            x = []
-            y = []
-            count = 0
-            for key in user_data.keys():
-                count += 1
-                if count > 7:
-                    break
-                x.append(key)
-                y.append(int(user_data[key][stat.value]))
-
-            fig = px.line(x=x, y=y, title=f"{user.display_name}'s Shuriken Chart - Past Week",
-                          labels={"x": "Date", "y": "Shuriken"}, height=500,
-                          width=500, markers=True, template="plotly_dark")
-            image = fig.to_image(format="png", width=500, height=500)
-            data = io.BytesIO(image)
-            file = discord.File(fp=data, filename="chart.png")
-            await ctx.response.send_message(file=file)
-        else:
-            x = []
-            exp = []
-            level = []
-            y = []
-            count = 0
-            for key in user_data.keys():
-                count += 1
-                if count > 7:
-                    break
-                x.append(key)
-                exp.append(int(user_data[key]["experience"]))
-                level.append(int(user_data[key]["level"]))
-            for index in range(len(level)):
-                xp = 0
-                for i in range(1, level[index]):
-                    xp += config.expRequired[f"{i}"]
-                xp += exp[index]
-                y.append(xp)
-
-
-
-            fig = px.line(x=x, y=y, title=f"{user.display_name}'s Experience Chart - Past Week",
-                          labels={"x": "Date", "y": "Shuriken"}, height=500,
-                          width=500, markers=True, template="plotly_dark")
-            image = fig.to_image(format="png", width=500, height=500)
-            data = io.BytesIO(image)
-            file = discord.File(fp=data, filename="chart.png")
-            await ctx.response.send_message(file=file)
+    # @app_commands.command(name="stats", description="Shows a graph about your certain stats.")
+    # @app_commands.choices(stat=[discord.app_commands.Choice(name="Shurikens", value="shuriken"),
+    #                             discord.app_commands.Choice(name="Leisure Kunais", value="leisure"),
+    #                             discord.app_commands.Choice(name="Experience", value="experience")])
+    # async def stats(self, ctx: discord.Interaction, stat: discord.app_commands.Choice[str], user: discord.Member = None):
+    #     if user is None:
+    #         user = ctx.user
+    #     collection = self.client.get_database_collection("data")
+    #     data = collection.find_one({"_id": 1})["daily_stats"]
+    #
+    #     user_data = dict()
+    #     for key in data.keys():
+    #         try:
+    #             user_data[key] = data[key][str(user.id)]
+    #         except Exception:
+    #             pass
+    #
+    #     if len(user_data.keys()) < 5:
+    #         embed = self.client.create_embed(title="Not enough statistics collected.", description="", color=discord.Color.red())
+    #         await ctx.response.send_message(embed=embed, ephemeral=True)
+    #
+    #
+    #     if stat.value in ['shuriken', 'leisure']:
+    #         x = []
+    #         y = []
+    #         count = 0
+    #         for key in user_data.keys():
+    #             count += 1
+    #             if count > 7:
+    #                 break
+    #             x.append(key)
+    #             y.append(int(user_data[key][stat.value]))
+    #
+    #         fig = px.line(x=x, y=y, title=f"{user.display_name}'s Shuriken Chart - Past Week",
+    #                       labels={"x": "Date", "y": "Shuriken"}, height=500,
+    #                       width=500, markers=True, template="plotly_dark")
+    #         image = fig.to_image(format="png", width=500, height=500)
+    #         data = io.BytesIO(image)
+    #         file = discord.File(fp=data, filename="chart.png")
+    #         await ctx.response.send_message(file=file)
+    #     else:
+    #         x = []
+    #         exp = []
+    #         level = []
+    #         y = []
+    #         count = 0
+    #         for key in user_data.keys():
+    #             count += 1
+    #             if count > 7:
+    #                 break
+    #             x.append(key)
+    #             exp.append(int(user_data[key]["experience"]))
+    #             level.append(int(user_data[key]["level"]))
+    #         for index in range(len(level)):
+    #             xp = 0
+    #             for i in range(1, level[index]):
+    #                 xp += config.expRequired[f"{i}"]
+    #             xp += exp[index]
+    #             y.append(xp)
+    #
+    #
+    #
+    #         fig = px.line(x=x, y=y, title=f"{user.display_name}'s Experience Chart - Past Week",
+    #                       labels={"x": "Date", "y": "Shuriken"}, height=500,
+    #                       width=500, markers=True, template="plotly_dark")
+    #         image = fig.to_image(format="png", width=500, height=500)
+    #         data = io.BytesIO(image)
+    #         file = discord.File(fp=data, filename="chart.png")
+    #         await ctx.response.send_message(file=file)
 
 
 
