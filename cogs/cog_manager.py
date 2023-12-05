@@ -481,7 +481,7 @@ class Cog_Manager(commands.Cog):
 
     async def handler_loop(self):
         while True:
-            await self.day_handler()
+            # await self.day_handler()
             await self.giveaway_handler()
             await asyncio.sleep(5)
 
