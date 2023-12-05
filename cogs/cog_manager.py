@@ -11,9 +11,9 @@ from discord import app_commands, Embed
 import time
 import datetime
 from random import choice
+import kaleido
 import plotly.express as px
 import io
-import kaleido
 
 
 class Cog_Manager(commands.Cog):
