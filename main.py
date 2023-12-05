@@ -8,4 +8,4 @@ if __name__ == "__main__":
 
     client = Bot(command_prefix="?", intents=discord.Intents.all(), case_insensitive=True, help_command=None,
                  mongodb_uri=getenv("MONGODB_URI"))
-    client.run(getenv("TEST_BOT_TOKEN"))
+    client.run(getenv("BOT_TOKEN"))
