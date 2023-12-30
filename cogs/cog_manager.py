@@ -362,8 +362,8 @@ class Cog_Manager(commands.Cog):
                                     Winner(s): {", ".join(win)}\nEnded at: {format_time}
                                     """
 
-            await channel.send(
-                f"🎉 **GIVEAWAY** 🎉 -> {giveaway_msg.jump_url}\n**Prize**: {prize}\n**Winner(s)**: {', '.join(win)}")
+            #await channel.send(
+            #    f"🎉 **GIVEAWAY** 🎉 -> {giveaway_msg.jump_url}\n**Prize**: {prize}\n**Winner(s)**: {', '.join(win)}")
 
 
             giveaway_embed = Embed(title=title, description=description, color=0xa22aaf, timestamp=datetime.datetime.now())
@@ -372,7 +372,7 @@ class Cog_Manager(commands.Cog):
             if role:
 
                 giveaway_embed.add_field(name="Role Required:", value=role.mention)
-
+    
             if thumbnail_url != "":
                 try:
                     giveaway_embed.set_thumbnail(url=thumbnail_url)
