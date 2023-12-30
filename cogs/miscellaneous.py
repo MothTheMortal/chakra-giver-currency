@@ -328,8 +328,8 @@ class Miscellaneous(commands.Cog):
 
         # giveaway_channel = ctx.guild.get_channel(int(data[message_id]["channel_id"]))
         # giveaway_msg = await giveaway_channel.fetch_message(int(message_id))
-        # format_time = data[message_id]["format_time"]
-        # prize = data[message_id]["prize"]
+        format_time = data[message_id]["format_time"]
+        prize = data[message_id]["prize"]
         # embed = giveaway_msg.embeds[0]
 
 
