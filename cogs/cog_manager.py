@@ -423,11 +423,11 @@ class Cog_Manager(commands.Cog):
         with open("data/giveaways.json", "r") as f:
             data = json.load(f)
         giveaways_list = [i for i in data.keys()]
+        print(giveaways_list)
         for msg_id in giveaways_list:
             if int(data[msg_id]["end_time"]) < time.time() and data[msg_id]["ended"] != "True":
                 try:
                     await self.giveaway_finish(str(msg_id))
-                    print("Handling!")
                 except:
                     pass
 
