@@ -362,8 +362,8 @@ class Cog_Manager(commands.Cog):
                                     Winner(s): {", ".join(win)}\nEnded at: {format_time}
                                     """
 
-            #await channel.send(
-            #    f"🎉 **GIVEAWAY** 🎉 -> {giveaway_msg.jump_url}\n**Prize**: {prize}\n**Winner(s)**: {', '.join(win)}")
+            await channel.send(
+               f"🎉 **GIVEAWAY** 🎉 -> {giveaway_msg.jump_url}\n**Prize**: {prize}\n**Winner(s)**: {', '.join(win)}")
 
 
             giveaway_embed = Embed(title=title, description=description, color=0xa22aaf, timestamp=datetime.datetime.now())
@@ -379,7 +379,7 @@ class Cog_Manager(commands.Cog):
                 except Exception:
                     pass
 
-            await giveaway_msg.edit(embed=giveaway_embed)
+            # await giveaway_msg.edit(embed=giveaway_embed)
         else:
 
             await channel.send(f"🎉 **GIVEAWAY** 🎉\n**Prize**: {prize}\n**Winner(s)**: No one")
@@ -400,14 +400,14 @@ class Cog_Manager(commands.Cog):
                     giveaway_embed.set_thumbnail(url=thumbnail_url)
                 except Exception:
                     pass
-            await giveaway_msg.edit(embed=giveaway_embed)
+            # await giveaway_msg.edit(embed=giveaway_embed)
 
         with open("data/giveaways.json", "r") as f:
             data = json.load(f)
 
         data[message_id]["ended"] = "True"
         data[message_id]["participants"] = users
-        await giveaway_msg.clear_reactions()
+        # await giveaway_msg.clear_reactions()
         try:
             data[message_id]["winners"] = winners_list
         except Exception:
@@ -425,11 +425,10 @@ class Cog_Manager(commands.Cog):
         giveaways_list = [i for i in data.keys()]
         print(giveaways_list)
         for msg_id in giveaways_list:
+            print(int(data[msg_id]["end_time"]) < time.time())
+            print(data[msg_id]["ended"] != "True")
             if int(data[msg_id]["end_time"]) < time.time() and data[msg_id]["ended"] != "True":
-                try:
-                    await self.giveaway_finish(str(msg_id))
-                except:
-                    pass
+                await self.giveaway_finish(str(msg_id))
 
     async def day_handler(self):
         try:
