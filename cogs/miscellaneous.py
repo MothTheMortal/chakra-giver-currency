@@ -326,11 +326,11 @@ class Miscellaneous(commands.Cog):
         if message_id not in data.keys():
             return await ctx.response.send_message("Giveaway not found!", ephemeral=True)
 
-        giveaway_channel = ctx.guild.get_channel(int(data[message_id]["channel_id"]))
-        giveaway_msg = await giveaway_channel.fetch_message(int(message_id))
-        format_time = data[message_id]["format_time"]
-        prize = data[message_id]["prize"]
-        embed = giveaway_msg.embeds[0]
+        # giveaway_channel = ctx.guild.get_channel(int(data[message_id]["channel_id"]))
+        # giveaway_msg = await giveaway_channel.fetch_message(int(message_id))
+        # format_time = data[message_id]["format_time"]
+        # prize = data[message_id]["prize"]
+        # embed = giveaway_msg.embeds[0]
 
 
         winners = []
@@ -341,13 +341,15 @@ class Miscellaneous(commands.Cog):
                 winner = f'<@{choice(data[message_id]["participants"])}>'
             winners.append(winner)
 
-        await ctx.response.send_message(f"🎉 **GIVEAWAY RE-ROLLED** 🎉 -> {giveaway_msg.jump_url}\n**Prize**: {prize}\n**New Winner(s)**: {', '.join(winners)}")
+        # await ctx.response.send_message(f"🎉 **GIVEAWAY RE-ROLLED** 🎉 -> {giveaway_msg.jump_url}\n**Prize**: {prize}\n**New Winner(s)**: {', '.join(winners)}")
+        await ctx.response.send_message(f"🎉 **GIVEAWAY RE-ROLLED** 🎉\n**Prize**: {prize}\n**New Winner(s)**: {', '.join(winners)}")
 
-        description = f"""
-                                                Re-rolled Winner(s): {", ".join(winners)}\nEnded at: {format_time}
-                                                """
-        embed.description = description
-        await giveaway_msg.edit(embed=embed)
+        #
+        # description = f"""
+        #                                         Re-rolled Winner(s): {", ".join(winners)}\nEnded at: {format_time}
+        #                                         """
+        # embed.description = description
+        # await giveaway_msg.edit(embed=embed)
 
 
     # @app_commands.command(name="start", description="Start your journey on Chakra Giver!")
