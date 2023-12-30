@@ -412,8 +412,8 @@ class Cog_Manager(commands.Cog):
             data[message_id]["winners"] = winners_list
         except Exception:
             data[message_id]["winners"] = []
-        print("Test")
 
+        print(data)
 
 
         with open("data/giveaways.json", "w") as f:
