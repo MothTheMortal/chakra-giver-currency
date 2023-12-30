@@ -427,6 +427,7 @@ class Cog_Manager(commands.Cog):
             if int(data[msg_id]["end_time"]) < time.time() and data[msg_id]["ended"] != "True":
                 try:
                     await self.giveaway_finish(str(msg_id))
+                    print("Handling!")
                 except:
                     pass
 
