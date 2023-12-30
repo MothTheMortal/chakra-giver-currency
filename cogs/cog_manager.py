@@ -372,7 +372,7 @@ class Cog_Manager(commands.Cog):
             if role:
 
                 giveaway_embed.add_field(name="Role Required:", value=role.mention)
-    
+
             if thumbnail_url != "":
                 try:
                     giveaway_embed.set_thumbnail(url=thumbnail_url)
@@ -412,6 +412,7 @@ class Cog_Manager(commands.Cog):
             data[message_id]["winners"] = winners_list
         except Exception:
             data[message_id]["winners"] = []
+        print("Test")
 
 
 
